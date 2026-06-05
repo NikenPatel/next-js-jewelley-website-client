@@ -120,7 +120,10 @@ export const menuItems = [
         label: "Subcategories",
         path: "/admin/dashboard/products/subcategories",
       },
-      { label: "Collections", path: "/admin/dashboard/products/collections" },
+      {
+        label: "Collections",
+        path: "/admin/dashboard/products/newcollections",
+      },
       { label: "Product Reviews", path: "/admin/dashboard/products/reviews" },
       {
         label: "Inventory Management",

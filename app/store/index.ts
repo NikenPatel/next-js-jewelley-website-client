@@ -8,11 +8,15 @@ export type AppDispatch = typeof store.dispatch;
 
 import authReducer from "./slices/authSlice";
 import productReducer from "./slices/productSlice";
+import categoryReducer from "./slices/categorySlice";
+import subcategoryReducer from "./slices/subcategorySlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     product: productReducer,
+    category: categoryReducer,
+    subcategory: subcategoryReducer,
   },
 });
 

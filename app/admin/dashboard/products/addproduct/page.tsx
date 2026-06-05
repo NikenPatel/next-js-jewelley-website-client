@@ -1,14 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/app/store";
-import {
-  createProduct,
-  fetchProducts,
-  resetProductState,
-} from "@/app/store/slices/productSlice";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { fetchCategories } from "@/app/store/slices/categorySlice";
+import { createProduct, fetchProducts } from "@/app/store/slices/productSlice";
+import { fetchSubcategories } from "@/app/store/slices/subcategorySlice";
 import type { CreateProductPayload } from "@/app/admin/types/product";
 
 const initialFormState = {
@@ -32,15 +28,23 @@ const initialFormState = {
 };
 
 export default function AddProductPage() {
-  const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
-  const { products, loading, success, error } = useSelector(
-    (state: RootState) => state.product,
+  const dispatch = useAppDispatch();
+  const { products, loading, success, error } = useAppSelector(
+    (state) => state.product,
   );
+  const { categories: apiCategories } = useAppSelector(
+    (state) => state.category,
+  );
+  const { subcategories: apiSubcategories } = useAppSelector(
+    (state) => state.subcategory,
+  );
+  console.log(apiSubcategories, "subcategories");
   const [formData, setFormData] = useState(initialFormState);
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchCategories());
+    dispatch(fetchSubcategories());
   }, [dispatch]);
 
   //   useEffect(() => {
@@ -53,12 +57,22 @@ export default function AddProductPage() {
   const productList = Array.isArray(products)
     ? products
     : products?.products || [];
-  const categories = Array.from(
+  const fallbackCategories = Array.from(
     new Set(productList.map((item: any) => item.category).filter(Boolean)),
   );
+  const apiCategoryNames = Array.isArray(apiCategories)
+    ? apiCategories.map((category) => category.name)
+    : [];
+  const categories =
+    apiCategoryNames.count > 0 ? apiCategoryNames : fallbackCategories;
+  const subCategories = Array.isArray(apiSubcategories)
+    ? apiSubcategories.map((subcategory) => subcategory.name)
+    : [];
   const collections = Array.from(
     new Set(productList.map((item: any) => item.collection).filter(Boolean)),
   );
+  console.log(categories, "categories", subCategories);
+  console.log(apiSubcategories, "apiSubcategories");
 
   const updateField = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -235,10 +249,18 @@ export default function AddProductPage() {
                   <input
                     value={formData.subCategory}
                     onChange={(e) => updateField("subCategory", e.target.value)}
+                    list="subcategory-list"
                     placeholder="Pendant"
                     className="w-full rounded-3xl border border-beige bg-white px-4 py-3 text-dark outline-none transition focus:border-sorrell focus:ring-4 focus:ring-sorrell/15"
                     required
                   />
+                  {subCategories.length > 0 && (
+                    <datalist id="subcategory-list">
+                      {subCategories.map((subcategory) => (
+                        <option key={subcategory} value={subcategory} />
+                      ))}
+                    </datalist>
+                  )}
                 </label>
               </div>
 
