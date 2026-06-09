@@ -13,10 +13,16 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
+      <div
+        className={`fixed z-40 h-screen transition-all duration-300 lg:static lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <Sidebar />
+      </div>
 
-      <main className="flex-1 w-80 h-screen overflow-y-auto">
-        <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <main className="flex-1 h-screen overflow-y-auto ">
+        <Navbar toggleSidebar={() => setSidebarOpen((prev) => !prev)} />
 
         {children}
       </main>

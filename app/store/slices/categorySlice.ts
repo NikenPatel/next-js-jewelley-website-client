@@ -82,7 +82,9 @@ export const createCategory = createAsyncThunk<
 });
 
 const initialState: CategoryState = {
-  categories: [],
+  categories: {
+    data: [],
+  },
   loading: false,
   success: false,
   error: null,

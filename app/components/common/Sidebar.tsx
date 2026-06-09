@@ -73,7 +73,7 @@ export default function Sidebar() {
             {/* Sub Menu */}
             <div
               className={`overflow-hidden transition-all duration-300 ${
-                open === item.title ? "max-h-[600px]" : "max-h-0"
+                open === item.title ? "max-h-150" : "max-h-0"
               }`}
             >
               {item.children.map((sub) => {
