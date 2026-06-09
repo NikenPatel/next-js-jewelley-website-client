@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { fetchCategories } from "@/app/store/slices/categorySlice";
 import { createProduct, fetchProducts } from "@/app/store/slices/productSlice";
-import { fetchSubcategories } from "@/app/store/slices/subcategorySlice";
+import {
+  fetchSubcategories,
+  fetchSubcategorybyCategoryId,
+} from "@/app/store/slices/subcategorySlice";
 import type { CreateProductPayload } from "@/app/admin/types/product";
 
 const initialFormState = {
@@ -32,27 +35,26 @@ export default function AddProductPage() {
   const { products, loading, success, error } = useAppSelector(
     (state) => state.product,
   );
+
   const { categories: apiCategories } = useAppSelector(
     (state) => state.category,
   );
   const { subcategories: apiSubcategories } = useAppSelector(
     (state) => state.subcategory,
   );
-  console.log(apiSubcategories, "subcategories");
   const [formData, setFormData] = useState(initialFormState);
+  const [categoryId, setCategoryId] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchCategories());
-    dispatch(fetchSubcategories());
   }, [dispatch]);
 
-  //   useEffect(() => {
-  //     if (success) {
-  //       dispatch(resetProductState());
-  //       router.push("/admin/dashboard/products/allproduct");
-  //     }
-  //   }, [success, dispatch, router]);
+  useEffect(() => {
+    if (categoryId) {
+      dispatch(fetchSubcategorybyCategoryId({ categoryId }));
+    }
+  }, [dispatch, categoryId]);
 
   const productList = Array.isArray(products)
     ? products
@@ -60,22 +62,44 @@ export default function AddProductPage() {
   const fallbackCategories = Array.from(
     new Set(productList.map((item: any) => item.category).filter(Boolean)),
   );
-  const apiCategoryNames = Array.isArray(apiCategories)
-    ? apiCategories.map((category) => category.name)
+  const categoriesData = Array.isArray(apiCategories?.data)
+    ? apiCategories.data
     : [];
+
+  const apiCategoryNames = categoriesData.map((category: any) => category.name);
   const categories =
-    apiCategoryNames.count > 0 ? apiCategoryNames : fallbackCategories;
-  const subCategories = Array.isArray(apiSubcategories)
-    ? apiSubcategories.map((subcategory) => subcategory.name)
+    apiCategoryNames.length > 0 ? apiCategoryNames : fallbackCategories;
+
+  const subCategories = Array.isArray(apiSubcategories.data)
+    ? apiSubcategories.data.map((subcategory: any) => subcategory.name)
     : [];
   const collections = Array.from(
     new Set(productList.map((item: any) => item.collection).filter(Boolean)),
   );
-  console.log(categories, "categories", subCategories);
-  console.log(apiSubcategories, "apiSubcategories");
+
+  const handleCategoryChange = (value: string) => {
+    const selected = categoriesData.find(
+      (category: any) => category.name === value,
+    );
+
+    setCategoryId(selected?._id ?? "");
+    setFormData((prev) => ({
+      ...prev,
+      category: value,
+      subCategory: "",
+    }));
+  };
 
   const updateField = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "category") {
+      handleCategoryChange(value);
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -225,42 +249,43 @@ export default function AddProductPage() {
                   <span className="mb-2 block text-sm font-medium text-dark">
                     Category
                   </span>
-                  <input
+                  <select
                     value={formData.category}
                     onChange={(e) => updateField("category", e.target.value)}
-                    list="category-list"
-                    placeholder="Necklaces"
                     className="w-full rounded-3xl border border-beige bg-white px-4 py-3 text-dark outline-none transition focus:border-sorrell focus:ring-4 focus:ring-sorrell/15"
                     required
-                  />
-                  {categories.length > 0 && (
-                    <datalist id="category-list">
-                      {categories.map((category) => (
-                        <option key={category} value={category} />
-                      ))}
-                    </datalist>
-                  )}
+                  >
+                    <option value="">Select category</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
                 </label>
 
                 <label className="block">
                   <span className="mb-2 block text-sm font-medium text-dark">
                     Sub category
                   </span>
-                  <input
+                  <select
                     value={formData.subCategory}
                     onChange={(e) => updateField("subCategory", e.target.value)}
-                    list="subcategory-list"
-                    placeholder="Pendant"
                     className="w-full rounded-3xl border border-beige bg-white px-4 py-3 text-dark outline-none transition focus:border-sorrell focus:ring-4 focus:ring-sorrell/15"
                     required
-                  />
-                  {subCategories.length > 0 && (
-                    <datalist id="subcategory-list">
-                      {subCategories.map((subcategory) => (
-                        <option key={subcategory} value={subcategory} />
-                      ))}
-                    </datalist>
-                  )}
+                    disabled={!formData.category || subCategories.length === 0}
+                  >
+                    <option value="">
+                      {subCategories.length > 0
+                        ? "Select subcategory"
+                        : "Choose a category first"}
+                    </option>
+                    {subCategories.map((subcategory) => (
+                      <option key={subcategory} value={subcategory}>
+                        {subcategory}
+                      </option>
+                    ))}
+                  </select>
                 </label>
               </div>
 

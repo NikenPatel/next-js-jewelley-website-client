@@ -18,12 +18,24 @@ export interface SubcategoryState {
 }
 
 const subcategoryRequest = async <T>(
-  method: "post",
+  method: "get" | "post",
   path: string,
   body?: unknown,
 ): Promise<T> => {
   try {
-    const response = await api.post<T>(path, body);
+    let response;
+
+    switch (method) {
+      case "post":
+        response = await api.post<T>(path, body);
+        break;
+      case "get":
+        response = await api.get<T>(path);
+        break;
+      default:
+        throw new Error("Invalid request method");
+    }
+
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -70,7 +82,30 @@ export const fetchSubcategories = createAsyncThunk<
     );
   }
 });
+// fetch subcatagorybycatagoryid
+// http://localhost:8000/api/categories/:categoryId/subcategories
 
+export const fetchSubcategorybyCategoryId = createAsyncThunk<
+  Subcategory[],
+  { categoryId: string },
+  { rejectValue: string }
+>(
+  "subcategory/fetchSubcategorybyCategoryId",
+  async ({ categoryId }, thunkAPI) => {
+    try {
+      return await subcategoryRequest<Subcategory[]>(
+        "get",
+        `/api/categories/${categoryId}/subcategories`,
+      );
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch subcategories",
+      );
+    }
+  },
+);
 const initialState: SubcategoryState = {
   subcategories: [],
   loading: false,
@@ -111,6 +146,18 @@ const subcategorySlice = createSlice({
         state.subcategories = action.payload;
       })
       .addCase(fetchSubcategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? null;
+      })
+      .addCase(fetchSubcategorybyCategoryId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSubcategorybyCategoryId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subcategories = action.payload;
+      })
+      .addCase(fetchSubcategorybyCategoryId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? null;
       });
