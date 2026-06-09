@@ -2,17 +2,24 @@
 
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { fetchProducts } from "@/app/store/slices/productSlice";
+import {
+  fetchProductById,
+  fetchProducts,
+} from "@/app/store/slices/productSlice";
 import ProductCard from "../../components/user/Home/ProductCard";
+import { useParams } from "next/navigation";
 
 const ProductsPage = () => {
   const dispatch = useAppDispatch();
   const { products, loading, error } = useAppSelector(
     (state) => state.product as any,
   );
+  const params = useParams();
+
+  console.log(params, "params");
 
   useEffect(() => {
-    void dispatch(fetchProducts());
+    void dispatch(fetchProductById(params));
   }, [dispatch]);
 
   return (

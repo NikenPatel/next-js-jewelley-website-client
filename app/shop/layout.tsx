@@ -1,9 +1,10 @@
-function home1(params: type) {
-  return (
-    <div>
-      <h1>Shop Page</h1>
-    </div>
-  );
-}
+"use client";
+"use client";
 
-export default home1;
+export default function ShopLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <>{children}</>;
+}
