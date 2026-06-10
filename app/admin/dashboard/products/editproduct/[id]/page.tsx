@@ -10,7 +10,8 @@ import {
   resetProductState,
   updateProduct,
 } from "@/app/store/slices/productSlice";
-import { log } from "console";
+import { fetchCategories } from "@/app/store/slices/categorySlice";
+import { fetchSubcategorybyCategoryId } from "@/app/store/slices/subcategorySlice";
 
 interface Variant {
   variantId: string;
@@ -66,6 +67,12 @@ export default function EditProductPage() {
   const { selectedProduct, loading, success, error } = useSelector(
     (state: RootState) => state.product,
   );
+  const { categories: apiCategories } = useSelector(
+    (state: RootState) => state.category,
+  );
+  const { subcategories: apiSubcategories } = useSelector(
+    (state: RootState) => state.subcategory,
+  );
   const [formData, setFormData] = useState<ProductForm>({
     name: "",
     sku: "",
@@ -97,15 +104,41 @@ export default function EditProductPage() {
       ringSizes: [],
     },
   });
+  const [categoryId, setCategoryId] = useState("");
+
+  const categoriesData = Array.isArray(apiCategories)
+    ? apiCategories
+    : Array.isArray(apiCategories?.data)
+    ? apiCategories.data
+    : [];
+
+  const categories = categoriesData.map((category: any) => category.name);
+
+  const subCategories = Array.isArray(apiSubcategories)
+    ? apiSubcategories.map((subcategory: any) => subcategory.name)
+    : Array.isArray(apiSubcategories?.data)
+    ? apiSubcategories.data.map((subcategory: any) => subcategory.name)
+    : [];
+
+  const handleCategoryChange = (value: string) => {
+    const selected = categoriesData.find(
+      (category: any) => category.name === value,
+    );
+
+    setCategoryId(selected?._id || "");
+
+    setFormData((prev) => ({
+      ...prev,
+      category: value,
+      subCategory: "",
+    }));
+  };
+
   console.log(selectedProduct, "selectedProduct", formData);
 
-  //   useEffect(() => {
-  //     if (id) {
-  //       getProduct();
-  //     }
-  //   }, [id]);
   useEffect(() => {
     dispatch(fetchProductById(id));
+    dispatch(fetchCategories());
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -113,6 +146,23 @@ export default function EditProductPage() {
       setFormData(selectedProduct.product);
     }
   }, [selectedProduct]);
+
+  useEffect(() => {
+    if (formData.category && categoriesData.length > 0) {
+      const selected = categoriesData.find(
+        (category: any) => category.name === formData.category,
+      );
+      if (selected && selected._id !== categoryId) {
+        setCategoryId(selected._id);
+      }
+    }
+  }, [formData.category, categoriesData, categoryId]);
+
+  useEffect(() => {
+    if (categoryId) {
+      dispatch(fetchSubcategorybyCategoryId({ categoryId }));
+    }
+  }, [dispatch, categoryId]);
 
   //   const getProduct = async () => {
   //     try {
@@ -146,7 +196,7 @@ export default function EditProductPage() {
       await dispatch(
         updateProduct({
           productId: id,
-          data: formData,
+          data: formData as any,
         }),
       ).unwrap();
       if (success) {
@@ -194,21 +244,40 @@ export default function EditProductPage() {
             className="rounded border p-3"
           />
 
-          <input
+          <select
             name="category"
             value={formData.category}
-            onChange={handleChange}
-            placeholder="Category"
-            className="rounded border p-3"
-          />
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="rounded border p-3 bg-white"
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((category: any) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
 
-          <input
+          <select
             name="subCategory"
             value={formData.subCategory}
             onChange={handleChange}
-            placeholder="Sub Category"
-            className="rounded border p-3"
-          />
+            className="rounded border p-3 bg-white"
+            required
+            disabled={!formData.category || subCategories.length === 0}
+          >
+            <option value="">
+              {subCategories.length > 0
+                ? "Select Subcategory"
+                : "Choose a category first"}
+            </option>
+            {subCategories.map((subcategory: any) => (
+              <option key={subcategory} value={subcategory}>
+                {subcategory}
+              </option>
+            ))}
+          </select>
 
           <input
             name="collection"

@@ -254,7 +254,7 @@ export default function CategoriesPage() {
                   <p className="text-sm text-dark/70">No categories yet.</p>
                 ) : (
                   categories.length > 0 &&
-                  categories.map((category) => (
+                  categories.map((category: Category) => (
                     <div
                       key={category._id ?? category.slug}
                       className="rounded-3xl border border-beige p-4"

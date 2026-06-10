@@ -4,8 +4,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { AuthState } from "./slices/authSlice";
 import type { ProductState } from "@/app/admin/types/product";
 import type { CategoryState } from "./slices/categorySlice";
-// import type { SubcategoryState } from "./slices/subcategorySlice";
 import type { CartState } from "./slices/cartSlice";
+import type { OrderState } from "./slices/orderSlice";
+// import type { SubcategoryState } from "./slices/subcategorySlice";
 
 import authReducer from "./slices/authSlice";
 import productReducer from "./slices/productSlice";
@@ -15,6 +16,7 @@ import subcategoryReducer, {
 } from "./slices/subcategorySlice";
 import cartReducer from "./slices/cartSlice";
 import wishlistReducer, { WishlistState } from "./slices/wishlistSlice";
+import orderReducer from "./slices/orderSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,6 +26,7 @@ const store = configureStore({
     subcategory: subcategoryReducer,
     cart: cartReducer,
     wishlist: wishlistReducer,
+    order: orderReducer,
   },
 });
 
@@ -34,6 +37,7 @@ export interface RootState {
   subcategory: SubcategoryState;
   cart: CartState;
   wishlist: WishlistState;
+  order: OrderState;
 }
 
 export type AppDispatch = typeof store.dispatch;
