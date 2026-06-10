@@ -41,25 +41,21 @@ const BestSellerSection = () => {
           eyebrow="Best Sellers"
           title="Beloved Pieces, Beautifully Made"
         />
-
         {loading && (
           <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500 mt-12">
             Loading bestselling products...
           </div>
         )}
-
         {error && !loading && (
           <div className="rounded-3xl border border-red-200 bg-red-50 p-10 text-center text-red-700 mt-12">
             {error}
           </div>
         )}
-
         {!loading && !error && bestSellers.length === 0 && (
           <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500 mt-12">
             No bestseller products found.
           </div>
         )}
-
         {!loading && !error && bestSellers.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
             {bestSellers.map((product: any) => (

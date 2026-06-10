@@ -27,7 +27,7 @@ interface SignupPayload {
   password: string;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   token: string;
   loading: boolean;

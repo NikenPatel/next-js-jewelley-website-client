@@ -11,7 +11,7 @@ export interface Subcategory {
 }
 
 export interface SubcategoryState {
-  subcategories: Subcategory[];
+  subcategories: Subcategory[] | any;
   loading: boolean;
   success: boolean;
   error: string | null;

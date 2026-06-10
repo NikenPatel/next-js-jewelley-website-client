@@ -1,9 +1,11 @@
 import { FaHeart, FaStar } from "react-icons/fa";
+import WishlistButton from "../../ui/WishlistButton";
 
 const ProductCard = ({ product }: { product: any }) => {
   const productName = product?.name ?? "Untitled Piece";
   const productImage =
-    product?.image || "https://via.placeholder.com/500x500?text=No+Image";
+    product?.image ||
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80";
   const skuText = product?.sku || product?._id || "N/A";
   const priceText =
     typeof product?.price === "number"
@@ -20,9 +22,10 @@ const ProductCard = ({ product }: { product: any }) => {
           className="w-full h-80 object-cover group-hover:scale-105 transition duration-500"
         />
 
-        <button className="absolute top-4 right-4 bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:text-red-500">
+        {/* <button className="absolute top-4 right-4 bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:text-red-500">
           <FaHeart />
-        </button>
+        </button> */}
+        <WishlistButton product={product} />
       </div>
 
       <div className="p-5">

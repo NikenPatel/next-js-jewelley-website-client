@@ -9,11 +9,19 @@ import ArrivalSection from "./components/user/Home/ArrivalSection";
 import BestSellerSection from "./components/user/Home/BestSellerSection";
 import Herosection from "./components/user/Home/HeroSection";
 import CategoriesSection from "./components/user/Home/CategoriesSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShopNavbar from "./components/user/Home/navbar";
+import { useAppDispatch } from "./store/hooks";
+import { getCart } from "./store/slices/cartSlice";
 
 export default function Home() {
   const [quickView, setQuickView] = useState(null);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCart());
+  }, [dispatch]);
 
   return (
     <>
