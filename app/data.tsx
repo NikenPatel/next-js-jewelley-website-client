@@ -138,10 +138,11 @@ export const menuItems = [
     children: [
       { label: "All Orders", path: "/admin/dashboard/orders" },
       { label: "Returns & RTO", path: "/admin/dashboard/orders/returns" },
-      { label: "Pending Orders", path: "/admin/dashboard/orders/pending" },
-      { label: "Processing", path: "/admin/dashboard/orders/processing" },
-      { label: "Shipped", path: "/admin/dashboard/orders/shipped" },
-      { label: "Delivered", path: "/admin/dashboard/orders/delivered" },
+      // { label: "Pending Orders", path: "/admin/dashboard/orders/pending" },
+      // { label: "Processing", path: "/admin/dashboard/orders/processing" },
+      // { label: "Shipped", path: "/admin/dashboard/orders/shipped" },
+      // { label: "Delivered", path: "/admin/dashboard/orders/delivered" },
+      { label: "Payments History", path: "/admin/dashboard/payments" },
     ],
   },
   {
