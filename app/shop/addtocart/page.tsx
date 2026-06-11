@@ -73,11 +73,23 @@ export default function CartPage() {
 
   const handlePlaceOrder = () => {
     // Validate required address fields
-    const requiredFields = ["fullName", "mobile", "addressLine1", "city", "state", "country", "pincode"];
-    const missingFields = requiredFields.filter((field) => !address[field as keyof typeof address]?.trim());
+    const requiredFields = [
+      "fullName",
+      "mobile",
+      "addressLine1",
+      "city",
+      "state",
+      "country",
+      "pincode",
+    ];
+    const missingFields = requiredFields.filter(
+      (field) => !address[field as keyof typeof address]?.trim(),
+    );
 
     if (missingFields.length > 0) {
-      alert(`Please fill in all required shipping address fields: ${missingFields.join(", ")}`);
+      alert(
+        `Please fill in all required shipping address fields: ${missingFields.join(", ")}`,
+      );
       return;
     }
 
@@ -101,18 +113,26 @@ export default function CartPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl p-5">
+    <div className="mx-auto w-screen h-screen p-5 bg-amber-50 ">
       <h1 className="mb-6 text-3xl font-bold">Shopping Cart</h1>
 
       {items.length === 0 ? (
-        <div>Your cart is empty</div>
+        <>
+          <div>Your cart is empty</div>
+          <Link
+            href="/shop"
+            className="rounded-lg border border-[#99775c] px-4 py-2 text-sm font-medium text-[#99775c] transition hover:bg-[#f3ece7]"
+          >
+            Back to Shop
+          </Link>
+        </>
       ) : (
         <>
           {/* CART ITEMS */}
           <div className="space-y-5">
             {items.map((item: any) => {
               const itemVariant = item.productId?.variants?.find(
-                (v: any) => v.variantId === item.variantId
+                (v: any) => v.variantId === item.variantId,
               );
               const itemImage =
                 itemVariant?.images?.[0] ||
@@ -134,57 +154,57 @@ export default function CartPage() {
                       />
                     </div>
 
-                  {/* INFO */}
-                  <div>
-                    <h2 className="text-lg font-semibold">
-                      {item.productId?.name}
-                    </h2>
+                    {/* INFO */}
+                    <div>
+                      <h2 className="text-lg font-semibold">
+                        {item.productId?.name}
+                      </h2>
 
-                    <p className="text-sm text-gray-500">
-                      SKU: {item.productId?.sku}
-                    </p>
+                      <p className="text-sm text-gray-500">
+                        SKU: {item.productId?.sku}
+                      </p>
 
-                    <p className="text-sm text-gray-500">₹{item.price}</p>
+                      <p className="text-sm text-gray-500">₹{item.price}</p>
 
-                    <p className="text-sm">Quantity: {item.quantity}</p>
+                      <p className="text-sm">Quantity: {item.quantity}</p>
+                    </div>
+                  </div>
+
+                  {/* RIGHT */}
+                  <div className="flex items-center gap-4">
+                    {/* Quantity */}
+                    <div className="flex items-center gap-3 rounded border px-3 py-1">
+                      <button
+                        onClick={() => handleDecrease(item._id, item.quantity)}
+                      >
+                        -
+                      </button>
+
+                      <span>{item.quantity}</span>
+
+                      <button
+                        onClick={() => handleIncrease(item._id, item.quantity)}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {/* TOTAL */}
+                    <div className="w-24 text-right font-bold">
+                      ₹{item.price * item.quantity}
+                    </div>
+
+                    {/* REMOVE */}
+                    <button
+                      onClick={() => handleRemove(item._id)}
+                      className="text-red-500"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
-
-                {/* RIGHT */}
-                <div className="flex items-center gap-4">
-                  {/* Quantity */}
-                  <div className="flex items-center gap-3 rounded border px-3 py-1">
-                    <button
-                      onClick={() => handleDecrease(item._id, item.quantity)}
-                    >
-                      -
-                    </button>
-
-                    <span>{item.quantity}</span>
-
-                    <button
-                      onClick={() => handleIncrease(item._id, item.quantity)}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* TOTAL */}
-                  <div className="w-24 text-right font-bold">
-                    ₹{item.price * item.quantity}
-                  </div>
-
-                  {/* REMOVE */}
-                  <button
-                    onClick={() => handleRemove(item._id)}
-                    className="text-red-500"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
           </div>
 
           {/* SUMMARY */}

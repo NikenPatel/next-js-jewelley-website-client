@@ -21,15 +21,15 @@ function ShopNavbar() {
     setMounted(true);
   }, []);
 
-  const { token } = useSelector(
-    (state: { auth: { token: string | null } }) => state.auth,
+  const { token, user } = useSelector(
+    (state: { auth: { token: string | null; user: any } }) => state.auth,
   );
 
   const { items } = useAppSelector((state) => state.cart);
 
   const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
 
-  const navLinks = [
+  const baseLinks = [
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
     { name: "Collections", path: "/collections" },
@@ -37,6 +37,10 @@ function ShopNavbar() {
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
+
+  // const navLinks = token && user?.role !== "admin"
+  //   ? [...baseLinks, { name: "My Profile", path: "/shop/profile" }]
+  //   : baseLinks;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -57,7 +61,7 @@ function ShopNavbar() {
         </Link>
 
         <div className="nav-links hidden items-center gap-4 md:flex">
-          {navLinks.map((link) => (
+          {baseLinks.map((link) => (
             <Link
               key={link.path}
               href={link.path}
@@ -104,7 +108,13 @@ function ShopNavbar() {
           <Link
             className="icon-btn inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-slate-700 transition hover:border-[#bfa15c] hover:text-[#bfa15c]"
             aria-label="Account"
-            href={token ? "/admin/dashboard" : "/auth/signin"}
+            href={
+              token
+                ? user?.role === "admin"
+                  ? "/admin/dashboard"
+                  : "/shop/profile"
+                : "/auth/signin"
+            }
           >
             <Icon name="user" className="h-5 w-5" />
           </Link>

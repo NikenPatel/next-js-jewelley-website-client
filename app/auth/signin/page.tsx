@@ -31,7 +31,7 @@ export default function SignInPage() {
     const result = await dispatch(signin(form));
 
     if (signin.fulfilled.match(result)) {
-      router.push("/admin/dashboard");
+      router.push("/");
     }
   };
 

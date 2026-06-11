@@ -45,7 +45,7 @@ const SignUpPage = () => {
     const result = await dispatch(signup(payload));
 
     if (signup.fulfilled.match(result)) {
-      router.push("/dashboard");
+      router.push("/");
     }
   };
 
