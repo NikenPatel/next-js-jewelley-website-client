@@ -1,10 +1,13 @@
 import { FaHeart, FaStar } from "react-icons/fa";
 import WishlistButton from "../../ui/WishlistButton";
+import AddToCartButton from "./AddToCartButton";
 
 const ProductCard = ({ product }: { product: any }) => {
   const productName = product?.name ?? "Untitled Piece";
-  const productImage = product.variants[0].images[0];
-
+  // const productImage = product.variants[0].images[0];
+  const firstVariant = Array.isArray(product.variants)
+    ? product.variants[0]
+    : null;
   const skuText = product?.sku || product?._id || "N/A";
   const priceText =
     typeof product?.price === "number"
@@ -56,9 +59,19 @@ const ProductCard = ({ product }: { product: any }) => {
 
         <p className="text-2xl font-bold text-[#D4AF37] mt-4">{priceText}</p>
 
-        <button className="w-full mt-5 py-3 rounded-lg bg-[#111827] text-white hover:bg-[#D4AF37] hover:text-black transition font-medium">
+        {/* <button className="w-full mt-5 py-3 rounded-lg bg-[#111827] text-white hover:bg-[#D4AF37] hover:text-black transition font-medium">
           Add To Cart
-        </button>
+        </button> */}
+        <AddToCartButton
+          productId={product._id}
+          variantId={
+            firstVariant?.variantId || firstVariant?._id || product._id
+          }
+          stock={firstVariant?.stock ?? 1}
+          price={
+            firstVariant?.discountPrice || firstVariant?.price || product.price
+          }
+        />
       </div>
     </article>
   );

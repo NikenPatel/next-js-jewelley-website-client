@@ -9,7 +9,7 @@ const QuickViewModal = ({ product, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          src={product.image}
+          src={product.variants[0].images[0]}
           alt={product.name}
           className="w-full h-full object-cover"
         />

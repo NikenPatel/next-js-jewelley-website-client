@@ -9,6 +9,7 @@ export interface OrderItem {
 
 export interface Order {
   _id: string;
+  data: any;
   user?: {
     _id: string;
     name: string;

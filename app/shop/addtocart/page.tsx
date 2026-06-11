@@ -113,7 +113,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="mx-auto w-screen h-screen p-5 bg-amber-50 ">
+    <div className="mx-auto w-screen h-screen p-5n text-gray-700 bg-[#f8f5f2] ">
       <h1 className="mb-6 text-3xl font-bold">Shopping Cart</h1>
 
       {items.length === 0 ? (

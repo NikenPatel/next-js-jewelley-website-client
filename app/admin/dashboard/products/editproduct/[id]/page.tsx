@@ -23,6 +23,7 @@ interface Variant {
   clarity: string;
   color: string;
   price: number;
+  costPrice: number;
   discountPrice: number;
   stock: number;
   images: string[];
@@ -470,6 +471,21 @@ export default function EditProductPage() {
                     setFormData({ ...formData, variants: updated });
                   }}
                   placeholder="Gemstone"
+                  className="rounded border p-2"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Cost Price (₹)</label>
+                <input
+                  type="number"
+                  value={variant.costPrice || 0}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], costPrice: Number(e.target.value) };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Cost Price"
                   className="rounded border p-2"
                 />
               </div>

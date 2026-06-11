@@ -27,6 +27,7 @@ const initialFormState = {
   color: "",
 
   price: "",
+  costPrice: "",
   discountPrice: "",
   stock: "",
 
@@ -186,6 +187,8 @@ export default function AddProductPage() {
           color: formData.color,
 
           price: Number(formData.price),
+
+          costPrice: Number(formData.costPrice),
 
           discountPrice: Number(formData.discountPrice),
 
@@ -393,14 +396,28 @@ export default function AddProductPage() {
 
           {/* PRICE */}
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-4">
             <div className="flex flex-col gap-1">
               <label className="text-xs font-bold uppercase text-gray-500">
-                Price (₹)
+                Cost Price (₹)
               </label>
               <input
                 type="number"
-                placeholder="Price"
+                placeholder="Cost Price"
+                value={formData.costPrice}
+                onChange={(e) => updateField("costPrice", e.target.value)}
+                className="rounded-xl border p-4"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Selling Price (₹)
+              </label>
+              <input
+                type="number"
+                placeholder="Selling Price"
                 value={formData.price}
                 onChange={(e) => updateField("price", e.target.value)}
                 className="rounded-xl border p-4"

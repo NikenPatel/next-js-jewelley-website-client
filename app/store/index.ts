@@ -17,6 +17,8 @@ import subcategoryReducer, {
 import cartReducer from "./slices/cartSlice";
 import wishlistReducer, { WishlistState } from "./slices/wishlistSlice";
 import orderReducer from "./slices/orderSlice";
+import analyticsReducer from "./slices/analyticsSlice";
+import type { AnalyticsState } from "./slices/analyticsSlice";
 
 const store = configureStore({
   reducer: {
@@ -27,6 +29,7 @@ const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
     order: orderReducer,
+    analytics: analyticsReducer,
   },
 });
 
@@ -38,6 +41,7 @@ export interface RootState {
   cart: CartState;
   wishlist: WishlistState;
   order: OrderState;
+  analytics: AnalyticsState;
 }
 
 export type AppDispatch = typeof store.dispatch;
