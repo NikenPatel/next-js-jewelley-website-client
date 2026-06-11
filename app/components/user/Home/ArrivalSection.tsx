@@ -62,7 +62,7 @@ const ArrivalSection = ({ quickView, setQuickView }: any) => {
                 const firstVariant = Array.isArray(product.variants)
                   ? product.variants[0]
                   : null;
-
+                // [3].variants[0].images[0];
                 return (
                   <article
                     key={product._id ?? product.name}
@@ -71,7 +71,7 @@ const ArrivalSection = ({ quickView, setQuickView }: any) => {
                     <div className="relative overflow-hidden">
                       <img
                         src={
-                          product.image ||
+                          product.variants[0].images[0] ||
                           "https://via.placeholder.com/500x500?text=No+Image"
                         }
                         alt={product.name || "New arrival"}

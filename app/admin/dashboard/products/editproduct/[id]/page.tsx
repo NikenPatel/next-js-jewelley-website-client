@@ -12,6 +12,8 @@ import {
 } from "@/app/store/slices/productSlice";
 import { fetchCategories } from "@/app/store/slices/categorySlice";
 import { fetchSubcategorybyCategoryId } from "@/app/store/slices/subcategorySlice";
+import { uploadImage } from "@/app/utils/uploadImage";
+import { FaUpload, FaSync, FaTimes } from "react-icons/fa";
 
 interface Variant {
   variantId: string;
@@ -105,6 +107,7 @@ export default function EditProductPage() {
     },
   });
   const [categoryId, setCategoryId] = useState("");
+  const [isUploading, setIsUploading] = useState<number | null>(null);
 
   const categoriesData = Array.isArray(apiCategories)
     ? apiCategories
@@ -189,6 +192,37 @@ export default function EditProductPage() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, variantIndex: number) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(variantIndex);
+    try {
+      const urls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > 5 * 1024 * 1024) {
+          alert(`File ${files[i].name} exceeds 5MB limit.`);
+          continue;
+        }
+        const url = await uploadImage(files[i]);
+        urls.push(url);
+      }
+      
+      const updated = [...formData.variants];
+      const currentImages = updated[variantIndex].images || [];
+      updated[variantIndex] = {
+        ...updated[variantIndex],
+        images: [...currentImages, ...urls],
+      };
+      setFormData({ ...formData, variants: updated });
+    } catch (error) {
+      alert("Failed to upload image(s).");
+    } finally {
+      setIsUploading(null);
+      e.target.value = '';
+    }
   };
 
   const handleSubmit = async () => {
@@ -483,6 +517,61 @@ export default function EditProductPage() {
                   placeholder="Stock"
                   className="rounded border p-2"
                 />
+              </div>
+
+              <div className="md:col-span-3 mt-4">
+                <label className="mb-2 block text-sm font-bold uppercase text-gray-500">
+                  Variant Images
+                </label>
+                <div className="flex flex-col gap-4">
+                  <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 py-6 hover:bg-gray-100 transition">
+                    {isUploading === index ? (
+                      <FaSync className="animate-spin text-2xl text-gray-400 mb-2" />
+                    ) : (
+                      <FaUpload className="text-2xl text-gray-400 mb-2" />
+                    )}
+                    <span className="text-sm font-medium text-gray-600">
+                      {isUploading === index ? "Uploading..." : "Click to upload images"}
+                    </span>
+                    <span className="text-xs text-gray-400 mt-1">Supports JPG, PNG, WEBP up to 5MB</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => handleImageUpload(e, index)}
+                      disabled={isUploading === index}
+                    />
+                  </label>
+
+                  {variant.images && variant.images.length > 0 && (
+                    <div className="flex flex-wrap gap-4 mt-2">
+                      {variant.images.map((img, idx) => (
+                        <div key={idx} className="relative group">
+                          <img
+                            src={img}
+                            alt={`Preview ${idx + 1}`}
+                            className="h-20 w-20 rounded-lg object-cover border shadow-sm"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                               const updated = [...formData.variants];
+                               updated[index] = {
+                                  ...updated[index],
+                                  images: updated[index].images.filter((_, i) => i !== idx)
+                               };
+                               setFormData({ ...formData, variants: updated });
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                          >
+                            <FaTimes size={10} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

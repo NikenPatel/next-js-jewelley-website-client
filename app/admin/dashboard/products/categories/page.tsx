@@ -9,7 +9,8 @@ import {
   fetchCategories,
   resetCategoryState,
 } from "@/app/store/slices/categorySlice";
-import { FaPlus, FaTimes, FaSync } from "react-icons/fa";
+import { FaPlus, FaTimes, FaSync, FaUpload, FaImage } from "react-icons/fa";
+import { uploadImage } from "@/app/utils/uploadImage";
 
 interface Category {
   _id?: string;
@@ -55,6 +56,8 @@ export default function CategoriesPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isUploadingIcon, setIsUploadingIcon] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
     dispatch(resetCategoryState());
@@ -83,6 +86,32 @@ export default function CategoriesPage() {
   const handleNameChange = (value: string) => {
     updateField("name", value);
     updateField("slug", generateSlug(value));
+  };
+
+  const handleFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "icon" | "image"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size exceeds 5MB limit.");
+      return;
+    }
+
+    if (field === "icon") setIsUploadingIcon(true);
+    else setIsUploadingImage(true);
+
+    try {
+      const url = await uploadImage(file);
+      updateField(field, url);
+    } catch (error) {
+      alert(`Failed to upload ${field}. Please try again.`);
+    } finally {
+      if (field === "icon") setIsUploadingIcon(false);
+      else setIsUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -349,26 +378,56 @@ export default function CategoriesPage() {
               <div className="grid gap-5 sm:grid-cols-2 mb-5">
                 <div>
                   <label className="mb-1 block text-xs font-bold uppercase text-gray-500">
-                    Icon URL
+                    Icon Image
                   </label>
-                  <input
-                    value={form.icon}
-                    onChange={(e) => updateField("icon", e.target.value)}
-                    placeholder="https://example.com/icon.svg"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-800 outline-none transition focus:border-[#99775c] focus:ring-1 focus:ring-[#99775c]"
-                  />
+                  <div className="flex items-center gap-3 mt-1">
+                    <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition shadow-sm w-full">
+                      {isUploadingIcon ? (
+                        <FaSync className="animate-spin text-gray-500" />
+                      ) : (
+                        <FaUpload className="text-gray-500" />
+                      )}
+                      {isUploadingIcon ? "Uploading..." : "Upload Icon"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileUpload(e, "icon")}
+                        disabled={isUploadingIcon}
+                      />
+                    </label>
+                    {form.icon && (
+                      <img src={form.icon} alt="Icon preview" className="h-10 w-10 rounded border object-cover" />
+                    )}
+                  </div>
+                  {form.icon && <p className="text-xs text-green-600 mt-1 truncate max-w-[200px]">{form.icon}</p>}
                 </div>
 
                 <div>
                   <label className="mb-1 block text-xs font-bold uppercase text-gray-500">
-                    Image URL
+                    Category Image
                   </label>
-                  <input
-                    value={form.image}
-                    onChange={(e) => updateField("image", e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-800 outline-none transition focus:border-[#99775c] focus:ring-1 focus:ring-[#99775c]"
-                  />
+                  <div className="flex items-center gap-3 mt-1">
+                    <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition shadow-sm w-full">
+                      {isUploadingImage ? (
+                        <FaSync className="animate-spin text-gray-500" />
+                      ) : (
+                        <FaImage className="text-gray-500" />
+                      )}
+                      {isUploadingImage ? "Uploading..." : "Upload Image"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileUpload(e, "image")}
+                        disabled={isUploadingImage}
+                      />
+                    </label>
+                    {form.image && (
+                      <img src={form.image} alt="Image preview" className="h-10 w-10 rounded border object-cover" />
+                    )}
+                  </div>
+                  {form.image && <p className="text-xs text-green-600 mt-1 truncate max-w-[200px]">{form.image}</p>}
                 </div>
               </div>
 
@@ -416,7 +475,7 @@ export default function CategoriesPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
+                  disabled={saving || isUploadingIcon || isUploadingImage}
                   className="rounded-lg bg-[#99775c] px-5 py-2 text-sm font-semibold text-white shadow hover:bg-[#836248] transition disabled:opacity-50"
                 >
                   {saving ? "Saving..." : isEditMode ? "Update Category" : "Create Category"}

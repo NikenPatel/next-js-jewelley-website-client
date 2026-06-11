@@ -8,6 +8,8 @@ import { fetchCategories } from "@/app/store/slices/categorySlice";
 import { fetchSubcategorybyCategoryId } from "@/app/store/slices/subcategorySlice";
 
 import { createProduct, fetchProducts } from "@/app/store/slices/productSlice";
+import { uploadImage } from "@/app/utils/uploadImage";
+import { FaUpload, FaSync, FaTimes } from "react-icons/fa";
 
 const initialFormState = {
   name: "",
@@ -62,6 +64,7 @@ export default function AddProductPage() {
   const [formData, setFormData] = useState(initialFormState);
 
   const [categoryId, setCategoryId] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -111,6 +114,40 @@ export default function AddProductPage() {
       category: value,
       subCategory: "",
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const urls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > 5 * 1024 * 1024) {
+          alert(`File ${files[i].name} exceeds 5MB limit.`);
+          continue;
+        }
+        const url = await uploadImage(files[i]);
+        urls.push(url);
+      }
+      
+      const currentImages = formData.images ? formData.images.split(",").map(i => i.trim()).filter(Boolean) : [];
+      const newImages = [...currentImages, ...urls].join(", ");
+      updateField("images", newImages);
+    } catch (error) {
+      alert("Failed to upload image(s).");
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      e.target.value = '';
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    const currentImages = formData.images.split(",").map(i => i.trim()).filter(Boolean);
+    const newImages = currentImages.filter((_, idx) => idx !== indexToRemove).join(", ");
+    updateField("images", newImages);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -400,13 +437,53 @@ export default function AddProductPage() {
 
           {/* IMAGES */}
 
-          <input
-            type="text"
-            placeholder="/uploads/ring1.jpg, /uploads/ring2.jpg"
-            value={formData.images}
-            onChange={(e) => updateField("images", e.target.value)}
-            className="w-full rounded-xl border p-4"
-          />
+          <div>
+            <label className="mb-2 block text-sm font-bold uppercase text-gray-500">
+              Product Images
+            </label>
+            <div className="flex flex-col gap-4">
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 py-8 hover:bg-gray-100 transition">
+                {isUploading ? (
+                  <FaSync className="animate-spin text-3xl text-gray-400 mb-2" />
+                ) : (
+                  <FaUpload className="text-3xl text-gray-400 mb-2" />
+                )}
+                <span className="text-sm font-medium text-gray-600">
+                  {isUploading ? "Uploading..." : "Click to upload images"}
+                </span>
+                <span className="text-xs text-gray-400 mt-1">Supports JPG, PNG, WEBP up to 5MB</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={isUploading}
+                />
+              </label>
+
+              {formData.images && (
+                <div className="flex flex-wrap gap-4 mt-2">
+                  {formData.images.split(",").map(i => i.trim()).filter(Boolean).map((img, idx) => (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={img}
+                        alt={`Preview ${idx + 1}`}
+                        className="h-24 w-24 rounded-lg object-cover border shadow-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                      >
+                        <FaTimes size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* CUSTOMIZATION */}
 
@@ -522,8 +599,8 @@ export default function AddProductPage() {
 
           <button
             type="submit"
-            disabled={loading}
-            className="rounded-xl bg-black px-8 py-4 text-white"
+            disabled={loading || isUploading}
+            className="rounded-xl bg-black px-8 py-4 text-white disabled:opacity-50"
           >
             {loading ? "Adding..." : "Add Product"}
           </button>

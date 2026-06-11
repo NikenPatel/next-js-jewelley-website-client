@@ -44,6 +44,7 @@ export default function SignInPage() {
             src={sideimage}
             alt="Jewelry"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover opacity-20"
             priority
           />

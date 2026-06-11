@@ -21,7 +21,7 @@ type TabType = "all" | "active" | "low" | "out";
 export default function InventoryManagementPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { products, loading, error } = useSelector(
-    (state: RootState) => state.product
+    (state: RootState) => state.product,
   );
 
   const [activeTab, setActiveTab] = useState<TabType>("all");
@@ -38,10 +38,11 @@ export default function InventoryManagementPage() {
   // Data processing: Calculate total stock per product
   const inventoryData = useMemo(() => {
     return productList.map((product) => {
-      const totalStock = product.variants?.reduce(
-        (sum, variant) => sum + (variant.stock || 0),
-        0
-      ) || 0;
+      const totalStock =
+        product.variants?.reduce(
+          (sum, variant) => sum + (variant.stock || 0),
+          0,
+        ) || 0;
 
       let status: TabType = "out";
       if (totalStock > 5) status = "active";
@@ -61,19 +62,21 @@ export default function InventoryManagementPage() {
       const matchesSearch =
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.sku.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesTab = activeTab === "all" || item.inventoryStatus === activeTab;
-      
+
+      const matchesTab =
+        activeTab === "all" || item.inventoryStatus === activeTab;
+
       return matchesSearch && matchesTab;
     });
   }, [inventoryData, activeTab, searchTerm]);
+  //   console.log("filteredInventory", filteredInventory[0].variants[0].images[0]);
 
   // Summary counts
   const counts = {
     all: inventoryData.length,
-    active: inventoryData.filter(i => i.inventoryStatus === "active").length,
-    low: inventoryData.filter(i => i.inventoryStatus === "low").length,
-    out: inventoryData.filter(i => i.inventoryStatus === "out").length,
+    active: inventoryData.filter((i) => i.inventoryStatus === "active").length,
+    low: inventoryData.filter((i) => i.inventoryStatus === "low").length,
+    out: inventoryData.filter((i) => i.inventoryStatus === "out").length,
   };
 
   const getStatusBadge = (status: TabType) => {
@@ -119,18 +122,51 @@ export default function InventoryManagementPage() {
         {/* Analytics Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { id: "all", label: "Total Products", count: counts.all, color: "text-[#2d2d2d]", icon: <FaBoxOpen /> },
-            { id: "active", label: "In Stock", count: counts.active, color: "text-green-600", icon: <FaCheckCircle /> },
-            { id: "low", label: "Low Stock (≤5)", count: counts.low, color: "text-orange-500", icon: <FaExclamationTriangle /> },
-            { id: "out", label: "Out of Stock", count: counts.out, color: "text-red-500", icon: <FaTimesCircle /> },
+            {
+              id: "all",
+              label: "Total Products",
+              count: counts.all,
+              color: "text-[#2d2d2d]",
+              icon: <FaBoxOpen />,
+            },
+            {
+              id: "active",
+              label: "In Stock",
+              count: counts.active,
+              color: "text-green-600",
+              icon: <FaCheckCircle />,
+            },
+            {
+              id: "low",
+              label: "Low Stock (≤5)",
+              count: counts.low,
+              color: "text-orange-500",
+              icon: <FaExclamationTriangle />,
+            },
+            {
+              id: "out",
+              label: "Out of Stock",
+              count: counts.out,
+              color: "text-red-500",
+              icon: <FaTimesCircle />,
+            },
           ].map((stat) => (
-            <div key={stat.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center gap-4">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 text-xl ${stat.color}`}>
+            <div
+              key={stat.id}
+              className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center gap-4"
+            >
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 text-xl ${stat.color}`}
+              >
                 {stat.icon}
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-gray-400">{stat.label}</p>
-                <p className="text-2xl font-bold text-[#2d2d2d]">{stat.count}</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  {stat.label}
+                </p>
+                <p className="text-2xl font-bold text-[#2d2d2d]">
+                  {stat.count}
+                </p>
               </div>
             </div>
           ))}
@@ -185,20 +221,36 @@ export default function InventoryManagementPage() {
           ) : filteredInventory.length === 0 ? (
             <div className="flex h-64 flex-col items-center justify-center text-center p-6">
               <FaBoxOpen className="text-5xl text-gray-200 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800">No products found</h3>
-              <p className="text-gray-500 mt-1">Try adjusting your filters or search term.</p>
+              <h3 className="text-lg font-semibold text-gray-800">
+                No products found
+              </h3>
+              <p className="text-gray-500 mt-1">
+                Try adjusting your filters or search term.
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full whitespace-nowrap text-left text-sm">
                 <thead className="bg-gray-50 text-gray-600 border-b border-gray-100">
                   <tr>
-                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">Product</th>
-                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">Category</th>
-                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">Variants</th>
-                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">Total Stock</th>
-                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">Status</th>
-                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px] text-right">Actions</th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">
+                      Product
+                    </th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">
+                      Category
+                    </th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">
+                      Variants
+                    </th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">
+                      Total Stock
+                    </th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px]">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 font-bold uppercase tracking-wider text-[11px] text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -207,8 +259,16 @@ export default function InventoryManagementPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-200">
-                            {item.thumbnail ? (
-                              <Image src={item.thumbnail} alt={item.name} fill className="object-cover" />
+                            {item &&
+                            item.variants &&
+                            item.variants[0].images[0] ? (
+                              <Image
+                                src={item.variants[0].images[0]}
+                                alt={item.name}
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover"
+                              />
                             ) : (
                               <div className="flex h-full items-center justify-center text-gray-400">
                                 <FaBoxOpen />
@@ -216,8 +276,12 @@ export default function InventoryManagementPage() {
                             )}
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900">{item.name}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">SKU: {item.sku}</p>
+                            <p className="font-semibold text-gray-900">
+                              {item.name}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              SKU: {item.sku}
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -227,10 +291,14 @@ export default function InventoryManagementPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-medium text-gray-600">{item.variants?.length || 0}</span>
+                        <span className="font-medium text-gray-600">
+                          {item.variants?.length || 0}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`font-bold text-lg ${item.totalStock === 0 ? "text-red-500" : item.totalStock <= 5 ? "text-orange-500" : "text-[#2d2d2d]"}`}>
+                        <span
+                          className={`font-bold text-lg ${item.totalStock === 0 ? "text-red-500" : item.totalStock <= 5 ? "text-orange-500" : "text-[#2d2d2d]"}`}
+                        >
                           {item.totalStock}
                         </span>
                       </td>

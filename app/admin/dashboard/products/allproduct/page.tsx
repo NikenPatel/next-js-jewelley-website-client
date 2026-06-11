@@ -71,7 +71,11 @@ export default function ProductList() {
   };
 
   const handleDelete = async (productId: string) => {
-    if (window.confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this product? This action cannot be undone.",
+      )
+    ) {
       await dispatch(deleteProduct(productId));
       dispatch(fetchProducts());
     }
@@ -96,6 +100,7 @@ export default function ProductList() {
         <table className="w-full text-sm">
           <thead className="bg-[#ddd0c8] text-[#323232]">
             <tr>
+              <th className="p-3 text-left">image</th>
               <th className="p-3 text-left">Product</th>
               <th className="p-3">Category</th>
               <th className="p-3">Collection</th>
@@ -104,7 +109,6 @@ export default function ProductList() {
               <th className="p-3">Actions</th>
             </tr>
           </thead>
-
           <tbody>
             {loading ? (
               <tr>
@@ -116,6 +120,34 @@ export default function ProductList() {
               productList.map((product: any, key: any) => (
                 <Fragment key={product._id}>
                   <tr key={product._id} className="border-t hover:bg-[#f3ece7]">
+                    <td className="p-4">
+                      {product?.variants?.length > 0 ? (
+                        product.variants.map((variant: any, index: number) => (
+                          <div
+                            key={index}
+                            className="h-10 w-10 rounded border overflow-hidden bg-gray-50 flex items-center justify-center"
+                          >
+                            <img
+                              src={
+                                variant?.images[0] ||
+                                product?.images ||
+                                product?.icon
+                              }
+                              alt={product?.name}
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display =
+                                  "none";
+                              }}
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <div className="h-10 w-10 rounded border bg-gray-100 flex items-center justify-center text-gray-400 text-xs">
+                          None
+                        </div>
+                      )}
+                    </td>
                     <td className="p-3">
                       <div>
                         <p className="font-semibold">{product.name}</p>

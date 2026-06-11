@@ -52,6 +52,7 @@ export default function ShopPage() {
     ? products
     : products?.products || [];
 
+  // console.log("productList", productList[0].variants[0].images[0]);
   return (
     <>
       <ShopNavbar />
@@ -106,6 +107,7 @@ export default function ShopPage() {
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {productList.map((product) => {
                 const firstVariant = product.variants?.[0];
+                // console.log("firstVariant", product.variants[0].images[0]);
                 const productId =
                   product._id ?? product.sku ?? product.slug ?? null;
 
@@ -115,11 +117,12 @@ export default function ShopPage() {
                     className="group overflow-hidden rounded-3xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
                   >
                     <div className="relative h-80 overflow-hidden bg-[#f3ece7]">
-                      {product.thumbnail ? (
+                      {product ? (
                         <Image
-                          src={product.thumbnail}
+                          src={product.variants[0].images[0]}
                           alt={product.name}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (

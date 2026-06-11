@@ -39,7 +39,10 @@ export default function WishlistButton({ product }: Props) {
   };
 
   return (
-    <button onClick={handleWishlist}>
+    <button
+      onClick={handleWishlist}
+      className="absolute top-4 right-4 bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:text-red-500"
+    >
       {isWishlisted ? (
         <FaHeart size={22} className="text-red-500" />
       ) : (
