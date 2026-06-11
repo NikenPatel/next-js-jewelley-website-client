@@ -288,74 +288,114 @@ export default function AddProductPage() {
           {/* VARIANT */}
 
           <div className="grid gap-6 md:grid-cols-2">
-            <input
-              type="text"
-              placeholder="Metal"
-              value={formData.metal}
-              onChange={(e) => updateField("metal", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Metal
+              </label>
+              <input
+                type="text"
+                placeholder="Metal"
+                value={formData.metal}
+                onChange={(e) => updateField("metal", e.target.value)}
+                className="rounded-xl border p-4 m-4"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Gemstone"
-              value={formData.gemstone}
-              onChange={(e) => updateField("gemstone", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Gemstone
+              </label>
+              <input
+                type="text"
+                placeholder="Gemstone"
+                value={formData.gemstone}
+                onChange={(e) => updateField("gemstone", e.target.value)}
+                className="rounded-xl border p-4"
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="Carat Weight"
-              value={formData.caratWeight}
-              onChange={(e) => updateField("caratWeight", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Carat Weight
+              </label>
+              <input
+                type="number"
+                placeholder="Carat Weight"
+                value={formData.caratWeight}
+                onChange={(e) => updateField("caratWeight", e.target.value)}
+                className="rounded-xl border p-4"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Clarity"
-              value={formData.clarity}
-              onChange={(e) => updateField("clarity", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Clarity
+              </label>
+              <input
+                type="text"
+                placeholder="Clarity"
+                value={formData.clarity}
+                onChange={(e) => updateField("clarity", e.target.value)}
+                className="rounded-xl border p-4"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder="Color"
-              value={formData.color}
-              onChange={(e) => updateField("color", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Color
+              </label>
+              <input
+                type="text"
+                placeholder="Color"
+                value={formData.color}
+                onChange={(e) => updateField("color", e.target.value)}
+                className="rounded-xl border p-4"
+              />
+            </div>
           </div>
 
           {/* PRICE */}
 
           <div className="grid gap-6 md:grid-cols-3">
-            <input
-              type="number"
-              placeholder="Price"
-              value={formData.price}
-              onChange={(e) => updateField("price", e.target.value)}
-              className="rounded-xl border p-4"
-              required
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Price (₹)
+              </label>
+              <input
+                type="number"
+                placeholder="Price"
+                value={formData.price}
+                onChange={(e) => updateField("price", e.target.value)}
+                className="rounded-xl border p-4"
+                required
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="Discount Price"
-              value={formData.discountPrice}
-              onChange={(e) => updateField("discountPrice", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Discount Price (₹)
+              </label>
+              <input
+                type="number"
+                placeholder="Discount Price"
+                value={formData.discountPrice}
+                onChange={(e) => updateField("discountPrice", e.target.value)}
+                className="rounded-xl border p-4"
+              />
+            </div>
 
-            <input
-              type="number"
-              placeholder="Stock"
-              value={formData.stock}
-              onChange={(e) => updateField("stock", e.target.value)}
-              className="rounded-xl border p-4"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold uppercase text-gray-500">
+                Stock
+              </label>
+              <input
+                type="number"
+                placeholder="Stock"
+                value={formData.stock}
+                onChange={(e) => updateField("stock", e.target.value)}
+                className="rounded-xl border p-4"
+              />
+            </div>
           </div>
 
           {/* IMAGES */}

@@ -31,7 +31,9 @@ const BestSellerSection = () => {
         product.rating >= 4.5,
     );
 
-    return filtered.length > 0 ? filtered.slice(0, 4) : products.slice(0, 4);
+    return filtered.length > 0
+      ? filtered.slice(0, 4)
+      : products && products.slice(0, 4);
   }, [products]);
 
   return (

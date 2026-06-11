@@ -230,7 +230,7 @@ export default function EditProductPage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <input
             name="name"
-            value={formData.name}
+            value={formData.name || ""}
             onChange={handleChange}
             placeholder="Product Name"
             className="rounded border p-3"
@@ -238,7 +238,7 @@ export default function EditProductPage() {
 
           <input
             name="sku"
-            value={formData.sku}
+            value={formData.sku || ""}
             onChange={handleChange}
             placeholder="SKU"
             className="rounded border p-3"
@@ -281,7 +281,7 @@ export default function EditProductPage() {
 
           <input
             name="collection"
-            value={formData.collection}
+            value={formData.collection || ""}
             onChange={handleChange}
             placeholder="Collection"
             className="rounded border p-3"
@@ -289,7 +289,7 @@ export default function EditProductPage() {
 
           <input
             name="brand"
-            value={formData.brand}
+            value={formData.brand || ""}
             onChange={handleChange}
             placeholder="Brand"
             className="rounded border p-3"
@@ -299,7 +299,7 @@ export default function EditProductPage() {
         <textarea
           rows={5}
           name="description"
-          value={formData.description}
+          value={formData.description || ""}
           onChange={handleChange}
           placeholder="Description"
           className="mt-4 w-full rounded border p-3"
@@ -375,7 +375,7 @@ export default function EditProductPage() {
 
         <input
           name="seoTitle"
-          value={formData.seoTitle}
+          value={formData.seoTitle || ""}
           onChange={handleChange}
           placeholder="SEO Title"
           className="mb-4 w-full rounded border p-3"
@@ -384,7 +384,7 @@ export default function EditProductPage() {
         <textarea
           rows={3}
           name="seoDescription"
-          value={formData.seoDescription}
+          value={formData.seoDescription || ""}
           onChange={handleChange}
           placeholder="SEO Description"
           className="w-full rounded border p-3"
@@ -395,100 +395,95 @@ export default function EditProductPage() {
         <h2 className="mt-8 mb-4 text-xl font-semibold">Variants</h2>
 
         {formData.variants.map((variant, index) => (
-          <div key={index} className="mb-4 rounded-lg border p-4">
+          <div key={index} className="mb-4 rounded-lg border p-6 bg-white shadow-sm">
+            <h3 className="mb-4 font-bold text-gray-700">Variant {index + 1}</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <input
-                value={variant.variantId}
-                onChange={(e) => {
-                  const updated = [...formData.variants];
-                  updated[index].variantId = e.target.value;
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Variant ID</label>
+                <input
+                  value={variant.variantId || ""}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], variantId: e.target.value };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Variant ID"
+                  className="rounded border p-2"
+                />
+              </div>
 
-                  setFormData({
-                    ...formData,
-                    variants: updated,
-                  });
-                }}
-                placeholder="Variant ID"
-                className="rounded border p-2"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Metal</label>
+                <input
+                  value={variant.metal || ""}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], metal: e.target.value };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Metal"
+                  className="rounded border p-2"
+                />
+              </div>
 
-              <input
-                value={variant.metal}
-                onChange={(e) => {
-                  const updated = [...formData.variants];
-                  updated[index].metal = e.target.value;
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Gemstone</label>
+                <input
+                  value={variant.gemstone || ""}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], gemstone: e.target.value };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Gemstone"
+                  className="rounded border p-2"
+                />
+              </div>
 
-                  setFormData({
-                    ...formData,
-                    variants: updated,
-                  });
-                }}
-                placeholder="Metal"
-                className="rounded border p-2"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Price (₹)</label>
+                <input
+                  type="number"
+                  value={variant.price || 0}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], price: Number(e.target.value) };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Price"
+                  className="rounded border p-2"
+                />
+              </div>
 
-              <input
-                value={variant.gemstone}
-                onChange={(e) => {
-                  const updated = [...formData.variants];
-                  updated[index].gemstone = e.target.value;
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Discount Price (₹)</label>
+                <input
+                  type="number"
+                  value={variant.discountPrice || 0}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], discountPrice: Number(e.target.value) };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Discount Price"
+                  className="rounded border p-2"
+                />
+              </div>
 
-                  setFormData({
-                    ...formData,
-                    variants: updated,
-                  });
-                }}
-                placeholder="Gemstone"
-                className="rounded border p-2"
-              />
-
-              <input
-                type="number"
-                value={variant.price}
-                onChange={(e) => {
-                  const updated = [...formData.variants];
-                  updated[index].price = Number(e.target.value);
-
-                  setFormData({
-                    ...formData,
-                    variants: updated,
-                  });
-                }}
-                placeholder="Price"
-                className="rounded border p-2"
-              />
-
-              <input
-                type="number"
-                value={variant.discountPrice}
-                onChange={(e) => {
-                  const updated = [...formData.variants];
-                  updated[index].discountPrice = Number(e.target.value);
-
-                  setFormData({
-                    ...formData,
-                    variants: updated,
-                  });
-                }}
-                placeholder="Discount Price"
-                className="rounded border p-2"
-              />
-
-              <input
-                type="number"
-                value={variant.stock}
-                onChange={(e) => {
-                  const updated = [...formData.variants];
-                  updated[index].stock = Number(e.target.value);
-
-                  setFormData({
-                    ...formData,
-                    variants: updated,
-                  });
-                }}
-                placeholder="Stock"
-                className="rounded border p-2"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold uppercase text-gray-500">Stock</label>
+                <input
+                  type="number"
+                  value={variant.stock || 0}
+                  onChange={(e) => {
+                    const updated = [...formData.variants];
+                    updated[index] = { ...updated[index], stock: Number(e.target.value) };
+                    setFormData({ ...formData, variants: updated });
+                  }}
+                  placeholder="Stock"
+                  className="rounded border p-2"
+                />
+              </div>
             </div>
           </div>
         ))}
@@ -519,14 +514,14 @@ export default function EditProductPage() {
 
         <input
           type="number"
-          value={formData.customizationOptions.engraving.maxChars}
+          value={formData.customizationOptions?.engraving?.maxChars || 0}
           onChange={(e) =>
             setFormData({
               ...formData,
               customizationOptions: {
                 ...formData.customizationOptions,
                 engraving: {
-                  ...formData.customizationOptions.engraving,
+                  ...formData.customizationOptions?.engraving,
                   maxChars: Number(e.target.value),
                 },
               },
@@ -538,14 +533,14 @@ export default function EditProductPage() {
 
         <input
           type="number"
-          value={formData.customizationOptions.engraving.additionalCost}
+          value={formData.customizationOptions?.engraving?.additionalCost || 0}
           onChange={(e) =>
             setFormData({
               ...formData,
               customizationOptions: {
                 ...formData.customizationOptions,
                 engraving: {
-                  ...formData.customizationOptions.engraving,
+                  ...formData.customizationOptions?.engraving,
                   additionalCost: Number(e.target.value),
                 },
               },
@@ -556,7 +551,7 @@ export default function EditProductPage() {
         />
 
         <input
-          value={formData.customizationOptions.ringSizes.join(",")}
+          value={formData.customizationOptions?.ringSizes?.join(",") || ""}
           onChange={(e) =>
             setFormData({
               ...formData,
