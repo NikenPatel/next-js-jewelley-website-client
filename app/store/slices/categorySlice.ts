@@ -23,7 +23,7 @@ export interface CategoryState {
 }
 
 const categoryRequest = async <T>(
-  method: "get" | "post",
+  method: "get" | "post" | "put" | "delete",
   path: string,
   body?: unknown,
 ): Promise<T> => {
@@ -36,6 +36,12 @@ const categoryRequest = async <T>(
         break;
       case "get":
         response = await api.get<T>(path);
+        break;
+      case "put":
+        response = await api.put<T>(path, body);
+        break;
+      case "delete":
+        response = await api.delete<T>(path);
         break;
       default:
         throw new Error("Invalid request method");
@@ -77,6 +83,35 @@ export const createCategory = createAsyncThunk<
   } catch (error) {
     return thunkAPI.rejectWithValue(
       error instanceof Error ? error.message : "Category creation failed",
+    );
+  }
+});
+
+export const updateCategory = createAsyncThunk<
+  Category,
+  { id: string; data: Partial<Category> },
+  { rejectValue: string }
+>("category/updateCategory", async ({ id, data }, thunkAPI) => {
+  try {
+    return await categoryRequest<Category>("put", `/api/categories/${id}`, data);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      error instanceof Error ? error.message : "Category update failed",
+    );
+  }
+});
+
+export const deleteCategory = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("category/deleteCategory", async (id, thunkAPI) => {
+  try {
+    await categoryRequest("delete", `/api/categories/${id}`);
+    return id;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      error instanceof Error ? error.message : "Category deletion failed",
     );
   }
 });
@@ -124,6 +159,30 @@ const categorySlice = createSlice({
         state.success = true;
       })
       .addCase(createCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? null;
+      })
+      .addCase(updateCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCategory.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(updateCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? null;
+      })
+      .addCase(deleteCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCategory.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? null;
       });

@@ -18,7 +18,7 @@ export interface SubcategoryState {
 }
 
 const subcategoryRequest = async <T>(
-  method: "get" | "post",
+  method: "get" | "post" | "put" | "delete",
   path: string,
   body?: unknown,
 ): Promise<T> => {
@@ -31,6 +31,12 @@ const subcategoryRequest = async <T>(
         break;
       case "get":
         response = await api.get<T>(path);
+        break;
+      case "put":
+        response = await api.put<T>(path, body);
+        break;
+      case "delete":
+        response = await api.delete<T>(path);
         break;
       default:
         throw new Error("Invalid request method");
@@ -62,6 +68,39 @@ export const createSubcategory = createAsyncThunk<
   } catch (error) {
     return thunkAPI.rejectWithValue(
       error instanceof Error ? error.message : "Subcategory creation failed",
+    );
+  }
+});
+
+export const updateSubcategory = createAsyncThunk<
+  Subcategory,
+  { id: string; data: { name: string; categoryId: string } },
+  { rejectValue: string }
+>("subcategory/updateSubcategory", async ({ id, data }, thunkAPI) => {
+  try {
+    return await subcategoryRequest<Subcategory>(
+      "put",
+      `/api/categories/subcategories/${id}`,
+      data,
+    );
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      error instanceof Error ? error.message : "Subcategory update failed",
+    );
+  }
+});
+
+export const deleteSubcategory = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("subcategory/deleteSubcategory", async (id, thunkAPI) => {
+  try {
+    await subcategoryRequest("delete", `/api/categories/subcategories/${id}`);
+    return id;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      error instanceof Error ? error.message : "Subcategory deletion failed",
     );
   }
 });
@@ -134,6 +173,30 @@ const subcategorySlice = createSlice({
         state.success = true;
       })
       .addCase(createSubcategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? null;
+      })
+      .addCase(updateSubcategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateSubcategory.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(updateSubcategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? null;
+      })
+      .addCase(deleteSubcategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSubcategory.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(deleteSubcategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? null;
       })

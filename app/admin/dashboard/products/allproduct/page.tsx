@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import {
   fetchProducts,
+  deleteProduct,
   resetProductState,
 } from "@/app/store/slices/productSlice";
 // import { RootState } from "@reduxjs/toolkit/query";
@@ -68,6 +69,14 @@ export default function ProductList() {
       dispatch(resetProductState());
     }
   };
+
+  const handleDelete = async (productId: string) => {
+    if (window.confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+      await dispatch(deleteProduct(productId));
+      dispatch(fetchProducts());
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f3ece7] p-6 text-gray-600">
       {/* Header */}
@@ -155,9 +164,16 @@ export default function ProductList() {
                             `/admin/dashboard/products/editproduct/${product._id}`,
                           )
                         }
-                        className="text-blue-600"
+                        className="text-blue-600 hover:text-blue-800 transition"
                       >
                         Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(product._id)}
+                        className="text-red-600 hover:text-red-800 transition ml-2"
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
