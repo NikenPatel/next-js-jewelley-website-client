@@ -12,7 +12,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const priceText =
     typeof product?.price === "number"
       ? `Rs. ${product.price}`
-      : product?.price || "Price on request";
+      : product?.variants[0].price || "Price on request===";
   const rating = product?.rating ?? 4.5;
   console.log("product", product.variants[0].images[0]);
 

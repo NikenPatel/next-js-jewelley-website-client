@@ -14,6 +14,17 @@ import {
 import { placeOrder } from "@/app/store/slices/orderSlice";
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import api from "@/app/store/lib/axios";
+
+const loadScript = (src: string) => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export default function CartPage() {
   const dispatch = useAppDispatch();
@@ -22,6 +33,7 @@ export default function CartPage() {
   const [orderInfo, setOrderInfo] = useState<any>(null);
 
   const { items, loading } = useAppSelector((state) => state.cart);
+  console.log("items", items);
 
   const [address, setAddress] = useState({
     fullName: "",
@@ -100,12 +112,66 @@ export default function CartPage() {
       }),
     )
       .unwrap()
-      .then((order) => {
-        setOrderInfo(order);
-        setShowModal(true);
+      .then(async (response: any) => {
+        if (paymentMethod === "ONLINE" && response.razorpayOrder) {
+          const res = await loadScript(
+            "https://checkout.razorpay.com/v1/checkout.js",
+          );
 
-        // Refresh cart after order
-        dispatch(getCart());
+          if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            return;
+          }
+
+          const options = {
+            key:
+              process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+              "rzp_test_T0KPrOkQb8NiSP", // fallback for testing if env is missing
+            amount: response.razorpayOrder.amount,
+            currency: response.razorpayOrder.currency,
+            name: "Jewellery Shop",
+            description: "Order Payment",
+            order_id: response.razorpayOrder.id,
+            handler: async function (paymentRes: any) {
+              try {
+                const verifyRes = await api.post(
+                  "/api/payment/verify-payment",
+                  {
+                    razorpay_order_id: paymentRes.razorpay_order_id,
+                    razorpay_payment_id: paymentRes.razorpay_payment_id,
+                    razorpay_signature: paymentRes.razorpay_signature,
+                  },
+                );
+
+                if (verifyRes.data.success) {
+                  setOrderInfo(response.orders || response.order);
+                  setShowModal(true);
+                  dispatch(getCart());
+                } else {
+                  alert("Payment verification failed");
+                }
+              } catch (err: any) {
+                alert(
+                  err.response?.data?.message || "Payment verification failed",
+                );
+              }
+            },
+            prefill: {
+              name: address.fullName,
+              contact: address.mobile,
+            },
+            theme: {
+              color: "#99775c",
+            },
+          };
+
+          const paymentObject = new (window as any).Razorpay(options);
+          paymentObject.open();
+        } else {
+          setOrderInfo(response.orders || response.order);
+          setShowModal(true);
+          dispatch(getCart());
+        }
       })
       .catch((err) => {
         alert(err);

@@ -96,7 +96,7 @@ const ArrivalSection = ({ quickView, setQuickView }: any) => {
                       <p className="mt-2 text-xl font-bold text-[#D4AF37]">
                         {typeof product.price === "number"
                           ? `Rs. ${product.price}`
-                          : product.price || "Price on request"}
+                          : product.variants[0].price || "Price on request"}
                       </p>
 
                       <div className="flex-1">

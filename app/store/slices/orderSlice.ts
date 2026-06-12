@@ -37,7 +37,7 @@ export const placeOrder = createAsyncThunk(
     try {
       const response = await api.post("/api/orders/checkout", data);
 
-      return response.data.orders || response.data.order;
+      return response.data;
     } catch (err: any) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to place order",
@@ -113,10 +113,11 @@ const orderSlice = createSlice({
       })
       .addCase(placeOrder.fulfilled, (state, action) => {
         state.loading = false;
-        if (Array.isArray(action.payload)) {
-          state.orders.push(...action.payload);
-        } else if (action.payload) {
-          state.orders.push(action.payload);
+        const orders = action.payload.orders || action.payload.order;
+        if (Array.isArray(orders)) {
+          state.orders.push(...orders);
+        } else if (orders) {
+          state.orders.push(orders);
         }
       })
       .addCase(placeOrder.rejected, (state, action) => {
