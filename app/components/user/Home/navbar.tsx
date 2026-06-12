@@ -32,8 +32,8 @@ function ShopNavbar() {
   const baseLinks = [
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
-    { name: "Collections", path: "/collections" },
-    { name: "New Arrivals", path: "/new-arrivals" },
+    { name: "Collections", path: "/#collections" },
+    { name: "New Arrivals", path: "/#new-arrivals" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
@@ -45,6 +45,17 @@ function ShopNavbar() {
   const handleLogout = () => {
     dispatch(logout());
     router.push("/auth/signin");
+  };
+
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    if (path.startsWith("/#") && pathname === "/") {
+      e.preventDefault();
+      const targetId = path.replace("/#", "");
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   // Prevent hydration mismatch
@@ -61,23 +72,27 @@ function ShopNavbar() {
         </Link>
 
         <div className="nav-links hidden items-center gap-4 md:flex">
-          {baseLinks.map((link) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              className={`group nav-btn relative text-sm font-medium uppercase tracking-[0.2em] text-slate-700 transition hover:text-[#bfa15c] ${
-                pathname === link.path ? "text-[#bfa15c]" : ""
-              }`}
-            >
-              {link.name}
-
-              <span
-                className={`absolute -bottom-1 left-0 h-0.5 w-0 bg-[#bfa15c] transition-all duration-300 ${
-                  pathname === link.path ? "w-full" : "group-hover:w-full"
+          {baseLinks.map((link) => {
+            const isActive = pathname === link.path || (link.path.startsWith("/#") && pathname === "/");
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                onClick={(e) => handleScroll(e, link.path)}
+                className={`group nav-btn relative text-sm font-medium uppercase tracking-[0.2em] text-slate-700 transition hover:text-[#bfa15c] ${
+                  isActive ? "text-[#bfa15c]" : ""
                 }`}
-              />
-            </Link>
-          ))}
+              >
+                {link.name}
+
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-[#bfa15c] transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                />
+              </Link>
+            );
+          })}
         </div>
 
         <div className="nav-icons flex items-center gap-2">
