@@ -1,4 +1,4 @@
-const SectionTitle = ({ eyebrow, title }) => {
+const SectionTitle = ({ eyebrow, title }: { eyebrow: string; title: string }) => {
   return (
     <div className="text-center mb-8">
       <p className="uppercase tracking-[4px] text-sm font-medium text-[#D4AF37]">

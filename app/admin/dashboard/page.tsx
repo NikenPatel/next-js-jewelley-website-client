@@ -65,8 +65,8 @@ export default function Dashboard() {
   // Extract recent orders (safely handling nested .data structure if it exists)
   const ordersList = Array.isArray(orders) 
     ? orders 
-    : Array.isArray(orders?.data) 
-      ? orders.data 
+    : Array.isArray((orders as any)?.data) 
+      ? (orders as any).data 
       : [];
   const recentOrders = [...ordersList].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 

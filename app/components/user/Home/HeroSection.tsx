@@ -21,12 +21,12 @@ function Herosection() {
       {/* Background Images */}
       <div className="absolute inset-0 flex">
         <img
-          src={images.hero1}
+          src={images.hero1.src}
           alt="Jewelry Collection"
           className="w-1/2 h-full object-cover"
         />
         <img
-          src={images.hero2}
+          src={images.hero2.src}
           alt="Luxury Jewelry"
           className="w-1/2 h-full object-cover"
         />
@@ -53,12 +53,12 @@ function Herosection() {
         </p> */}
 
         <div className="flex flex-col sm:flex-row gap-4 mt-10">
-          <button
-            className="px-8 py-4 bg-sorrell text-black font-semibold rounded-full hover:scale-105 transition "
+          <a
+            className="px-8 py-4 bg-sorrell text-black font-semibold rounded-full hover:scale-105 transition flex items-center justify-center"
             href="#shop"
           >
             Shop Collection
-          </button>
+          </a>
 
           <button className="px-8 py-4 border border-white text-white rounded-full hover:bg-white hover:text-black transition">
             Explore New Arrivals

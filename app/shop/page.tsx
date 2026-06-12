@@ -119,7 +119,7 @@ export default function ShopPage() {
                     <div className="relative h-80 overflow-hidden bg-[#f3ece7]">
                       {product ? (
                         <Image
-                          src={product.variants[0].images[0]}
+                          src={(product as any).variants[0].images[0]}
                           alt={product.name}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

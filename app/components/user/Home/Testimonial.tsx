@@ -1,6 +1,6 @@
 import { FaStar } from "react-icons/fa";
 
-const TestimonialCard = ({ testimonial }) => {
+const TestimonialCard = ({ testimonial }: { testimonial: any }) => {
   return (
     <div className="bg-gray-50 rounded-2xl p-8 shadow-md hover:shadow-xl transition duration-300">
       <div className="flex gap-1 text-[#D4AF37] mb-5">

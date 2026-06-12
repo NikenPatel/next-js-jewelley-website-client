@@ -146,6 +146,14 @@ export const menuItems = [
     ],
   },
   {
+    title: "Coupons",
+    icon: <FaTags />, // icon for coupons
+    children: [
+      { label: "All Coupons", path: "/admin/coupons" },
+      { label: "Create Coupon", path: "/admin/coupons/create" },
+    ],
+  },
+  {
     title: "Settings",
     icon: <FaCog />,
     children: [

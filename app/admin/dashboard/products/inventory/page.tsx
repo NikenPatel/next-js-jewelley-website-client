@@ -39,8 +39,8 @@ export default function InventoryManagementPage() {
   const inventoryData = useMemo(() => {
     return productList.map((product) => {
       const totalStock =
-        product.variants?.reduce(
-          (sum, variant) => sum + (variant.stock || 0),
+        (product as any).variants?.reduce(
+          (sum: number, variant: any) => sum + (variant.stock || 0),
           0,
         ) || 0;
 
@@ -61,7 +61,7 @@ export default function InventoryManagementPage() {
     return inventoryData.filter((item) => {
       const matchesSearch =
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.sku.toLowerCase().includes(searchTerm.toLowerCase());
+        ((item as any).sku?.toLowerCase() || "").includes(searchTerm.toLowerCase());
 
       const matchesTab =
         activeTab === "all" || item.inventoryStatus === activeTab;
@@ -69,7 +69,7 @@ export default function InventoryManagementPage() {
       return matchesSearch && matchesTab;
     });
   }, [inventoryData, activeTab, searchTerm]);
-  //   console.log("filteredInventory", filteredInventory[0].variants[0].images[0]);
+  //   console.log("filteredInventory", (filteredInventory[0] as any).variants[0].images[0]);
 
   // Summary counts
   const counts = {
@@ -260,10 +260,10 @@ export default function InventoryManagementPage() {
                         <div className="flex items-center gap-4">
                           <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-200">
                             {item &&
-                            item.variants &&
-                            item.variants[0].images[0] ? (
+                            (item as any).variants &&
+                            (item as any).variants[0].images[0] ? (
                               <Image
-                                src={item.variants[0].images[0]}
+                                src={(item as any).variants[0].images[0]}
                                 alt={item.name}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -280,19 +280,19 @@ export default function InventoryManagementPage() {
                               {item.name}
                             </p>
                             <p className="text-xs text-gray-500 mt-0.5">
-                              SKU: {item.sku}
+                              SKU: {(item as any).sku || 'N/A'}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className="rounded bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
-                          {item.category}
+                          {(item as any).category || 'Uncategorized'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span className="font-medium text-gray-600">
-                          {item.variants?.length || 0}
+                          {(item as any).variants?.length || 0}
                         </span>
                       </td>
                       <td className="px-6 py-4">

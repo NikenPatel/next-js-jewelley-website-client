@@ -1,4 +1,4 @@
-const QuickViewModal = ({ product, onClose }) => {
+const QuickViewModal = ({ product, onClose }: { product: any; onClose: () => void }) => {
   return (
     <div
       className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"

@@ -41,14 +41,14 @@ export default function AnalyticsDashboard() {
   // Safely extract arrays
   const ordersList = Array.isArray(orders)
     ? orders
-    : Array.isArray(orders?.data)
-      ? orders.data
+    : Array.isArray((orders as any)?.data)
+      ? (orders as any).data
       : [];
   console.log("ordersList", ordersList);
   const productsList = Array.isArray(products)
     ? products
-    : Array.isArray(products?.products)
-      ? products.products
+    : Array.isArray((products as any)?.products)
+      ? (products as any).products
       : [];
   console.log("productsList", productsList);
 
@@ -248,8 +248,8 @@ export default function AnalyticsDashboard() {
                 tick={{ fontSize: 12 }}
               />
               <Tooltip
-                formatter={(value: number) =>
-                  `₹${value.toLocaleString("en-IN")}`
+                formatter={(value: any) =>
+                  `₹${Number(value).toLocaleString("en-IN")}`
                 }
               />
               <Legend verticalAlign="top" height={36} />

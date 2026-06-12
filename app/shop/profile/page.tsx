@@ -25,7 +25,9 @@ import {
 } from "react-icons/fa";
 import { logout } from "@/app/store/slices/authSlice";
 
-export default function UserProfilePage() {
+import { Suspense } from "react";
+
+function UserProfileContent() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -739,5 +741,13 @@ export default function UserProfilePage() {
 
       <Footer />
     </>
+  );
+}
+
+export default function UserProfilePage() {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin text-[#D4AF37] text-4xl">Loading...</div></div>}>
+      <UserProfileContent />
+    </Suspense>
   );
 }

@@ -55,7 +55,19 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
         </button>
 
         {/* Dark Mode */}
-        <button className="text-gray-600 hover:text-yellow-500 transition">
+        <button
+          onClick={() => {
+            const html = document.documentElement;
+            if (html.classList.contains("dark")) {
+              html.classList.remove("dark");
+              localStorage.setItem("theme", "light");
+            } else {
+              html.classList.add("dark");
+              localStorage.setItem("theme", "dark");
+            }
+          }}
+          className="text-gray-600 hover:text-yellow-500 transition"
+        >
           <FaMoon size={18} />
         </button>
 

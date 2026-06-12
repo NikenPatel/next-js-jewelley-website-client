@@ -31,6 +31,7 @@ export const placeOrder = createAsyncThunk(
         pincode: string;
       };
       paymentMethod: string;
+      couponCode?: string;
     },
     { rejectWithValue },
   ) => {
