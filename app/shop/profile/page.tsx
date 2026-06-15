@@ -4,9 +4,13 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { fetchOrders, requestReturn, cancelOrder } from "@/app/store/slices/orderSlice";
+import {
+  fetchOrders,
+  requestReturn,
+  cancelOrder,
+} from "@/app/store/slices/orderSlice";
 import ShopNavbar from "../../components/user/Home/navbar";
-import Footer from "../../components/ui/Footer";
+import Footer from "../../components/common/Footer";
 import {
   FaBox,
   FaUndo,
@@ -36,7 +40,9 @@ function UserProfileContent() {
   const { orders, loading, error } = useAppSelector((state) => state.order);
   const { user, token } = useAppSelector((state) => state.auth as any);
 
-  const [activeTab, setActiveTab] = useState(activeTabParam === "orders" ? "orders" : "dashboard");
+  const [activeTab, setActiveTab] = useState(
+    activeTabParam === "orders" ? "orders" : "dashboard",
+  );
 
   // Return Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,10 +69,10 @@ function UserProfileContent() {
   // Derived metrics
   const totalOrders = orders.length;
   const activeOrdersCount = orders.filter((o) =>
-    ["placed", "confirmed", "processing", "shipped"].includes(o.orderStatus)
+    ["placed", "confirmed", "processing", "shipped"].includes(o.orderStatus),
   ).length;
   const completedReturnsCount = orders.filter((o) =>
-    ["delivered", "returned", "return_requested"].includes(o.orderStatus)
+    ["delivered", "returned", "return_requested"].includes(o.orderStatus),
   ).length;
 
   const returnReasonsList = [
@@ -126,8 +132,13 @@ function UserProfileContent() {
   };
 
   const handleCancelOrder = async (orderId: string) => {
-    if (!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
-    
+    if (
+      !confirm(
+        "Are you sure you want to cancel this order? This action cannot be undone.",
+      )
+    )
+      return;
+
     try {
       await dispatch(cancelOrder(orderId)).unwrap();
       showToast("Your order has been cancelled successfully.");
@@ -237,7 +248,10 @@ function UserProfileContent() {
             const isCurrent = stepNumber === currentStep;
 
             return (
-              <div key={step} className="flex flex-col items-center relative w-full">
+              <div
+                key={step}
+                className="flex flex-col items-center relative w-full"
+              >
                 <div
                   className={`z-10 flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${
                     isCompleted
@@ -293,7 +307,9 @@ function UserProfileContent() {
                   <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#99775c] to-[#70523b] text-2xl font-serif font-bold text-white shadow-md">
                     {user?.name?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <h2 className="mt-4 text-xl font-bold text-[#2d2d2d]">{user?.name || "Customer"}</h2>
+                  <h2 className="mt-4 text-xl font-bold text-[#2d2d2d]">
+                    {user?.name || "Customer"}
+                  </h2>
                   <p className="text-xs text-gray-500">{user?.email}</p>
                   <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#fcfaf9] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#99775c]">
                     Valued Member
@@ -311,10 +327,18 @@ function UserProfileContent() {
                       }`}
                     >
                       <span className="flex items-center gap-3">
-                        <FaRegListAlt className={activeTab === "dashboard" ? "text-white/80" : "text-gray-400"} />
+                        <FaRegListAlt
+                          className={
+                            activeTab === "dashboard"
+                              ? "text-white/80"
+                              : "text-gray-400"
+                          }
+                        />
                         Dashboard
                       </span>
-                      {activeTab === "dashboard" && <FaChevronRight className="text-[10px]" />}
+                      {activeTab === "dashboard" && (
+                        <FaChevronRight className="text-[10px]" />
+                      )}
                     </button>
                     <button
                       onClick={() => setActiveTab("orders")}
@@ -325,10 +349,18 @@ function UserProfileContent() {
                       }`}
                     >
                       <span className="flex items-center gap-3">
-                        <FaBox className={activeTab === "orders" ? "text-white/80" : "text-gray-400"} />
+                        <FaBox
+                          className={
+                            activeTab === "orders"
+                              ? "text-white/80"
+                              : "text-gray-400"
+                          }
+                        />
                         My Orders
                       </span>
-                      {activeTab === "orders" && <FaChevronRight className="text-[10px]" />}
+                      {activeTab === "orders" && (
+                        <FaChevronRight className="text-[10px]" />
+                      )}
                     </button>
                     <button
                       onClick={() => setActiveTab("account")}
@@ -339,10 +371,18 @@ function UserProfileContent() {
                       }`}
                     >
                       <span className="flex items-center gap-3">
-                        <FaUser className={activeTab === "account" ? "text-white/80" : "text-gray-400"} />
+                        <FaUser
+                          className={
+                            activeTab === "account"
+                              ? "text-white/80"
+                              : "text-gray-400"
+                          }
+                        />
                         Account Details
                       </span>
-                      {activeTab === "account" && <FaChevronRight className="text-[10px]" />}
+                      {activeTab === "account" && (
+                        <FaChevronRight className="text-[10px]" />
+                      )}
                     </button>
                   </nav>
 
@@ -364,8 +404,13 @@ function UserProfileContent() {
               {activeTab === "dashboard" && (
                 <div className="space-y-6">
                   <div className="rounded-3xl bg-white p-8 shadow-sm border border-gray-100">
-                    <h1 className="text-2xl font-serif text-[#2d2d2d] mb-2">Welcome back, {user?.name?.split(' ')[0]}!</h1>
-                    <p className="text-sm text-gray-500">From here you can view your recent orders and manage your account.</p>
+                    <h1 className="text-2xl font-serif text-[#2d2d2d] mb-2">
+                      Welcome back, {user?.name?.split(" ")[0]}!
+                    </h1>
+                    <p className="text-sm text-gray-500">
+                      From here you can view your recent orders and manage your
+                      account.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -374,8 +419,12 @@ function UserProfileContent() {
                         <FaBox />
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Total Orders</p>
-                        <p className="text-2xl font-bold text-[#2d2d2d]">{totalOrders}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                          Total Orders
+                        </p>
+                        <p className="text-2xl font-bold text-[#2d2d2d]">
+                          {totalOrders}
+                        </p>
                       </div>
                     </div>
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100 flex items-center gap-4">
@@ -383,8 +432,12 @@ function UserProfileContent() {
                         <FaSpinner />
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Active Shipments</p>
-                        <p className="text-2xl font-bold text-[#2d2d2d]">{activeOrdersCount}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                          Active Shipments
+                        </p>
+                        <p className="text-2xl font-bold text-[#2d2d2d]">
+                          {activeOrdersCount}
+                        </p>
                       </div>
                     </div>
                     <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100 flex items-center gap-4">
@@ -392,8 +445,12 @@ function UserProfileContent() {
                         <FaCheckCircle />
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Completed & Returns</p>
-                        <p className="text-2xl font-bold text-[#2d2d2d]">{completedReturnsCount}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                          Completed & Returns
+                        </p>
+                        <p className="text-2xl font-bold text-[#2d2d2d]">
+                          {completedReturnsCount}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -401,35 +458,60 @@ function UserProfileContent() {
                   {orders.length > 0 && (
                     <div className="rounded-3xl bg-white p-8 shadow-sm border border-gray-100">
                       <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-bold text-[#2d2d2d]">Latest Order</h3>
-                        <button onClick={() => setActiveTab("orders")} className="text-xs font-bold text-[#99775c] hover:underline uppercase tracking-wide">
+                        <h3 className="text-lg font-bold text-[#2d2d2d]">
+                          Latest Order
+                        </h3>
+                        <button
+                          onClick={() => setActiveTab("orders")}
+                          className="text-xs font-bold text-[#99775c] hover:underline uppercase tracking-wide"
+                        >
                           View All
                         </button>
                       </div>
-                      
+
                       {/* Mini order card */}
                       {(() => {
                         const order = orders[0];
-                        const statusInfo = getOrderStatusInfo(order.orderStatus);
+                        const statusInfo = getOrderStatusInfo(
+                          order.orderStatus,
+                        );
                         return (
                           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-4 rounded-2xl bg-[#fcfaf9] border border-gray-100">
                             <div className="flex items-center gap-4">
                               {order.productSnapshot?.image ? (
-                                <img src={order.productSnapshot.image} alt="Product" className="h-16 w-16 rounded-xl object-cover" />
+                                <img
+                                  src={order.productSnapshot.image}
+                                  alt="Product"
+                                  className="h-16 w-16 rounded-xl object-cover"
+                                />
                               ) : (
-                                <div className="h-16 w-16 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400"><FaBox /></div>
+                                <div className="h-16 w-16 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+                                  <FaBox />
+                                </div>
                               )}
                               <div>
-                                <p className="text-sm font-bold text-[#2d2d2d]">Order #{order._id.substring(order._id.length - 8).toUpperCase()}</p>
-                                <p className="text-xs text-gray-500 mt-1">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
+                                <p className="text-sm font-bold text-[#2d2d2d]">
+                                  Order #
+                                  {order._id
+                                    .substring(order._id.length - 8)
+                                    .toUpperCase()}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Placed on{" "}
+                                  {new Date(
+                                    order.createdAt,
+                                  ).toLocaleDateString()}
+                                </p>
                               </div>
                             </div>
-                            <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusInfo.colorClass}`}>
+                            <span
+                              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${statusInfo.colorClass}`}
+                            >
                               {statusInfo.icon}
                               {statusInfo.label}
                             </span>
                           </div>
-                        )
+                        );
                       })()}
                     </div>
                   )}
@@ -457,9 +539,12 @@ function UserProfileContent() {
                   ) : orders.length === 0 ? (
                     <div className="rounded-3xl bg-white p-12 text-center shadow-sm border border-gray-100">
                       <FaBox className="mx-auto mb-4 text-4xl text-gray-300" />
-                      <h3 className="text-xl font-semibold text-[#2d2d2d]">No Orders Yet</h3>
+                      <h3 className="text-xl font-semibold text-[#2d2d2d]">
+                        No Orders Yet
+                      </h3>
                       <p className="mt-2 text-gray-500">
-                        You haven't placed any orders yet. Start exploring our collections.
+                        You haven't placed any orders yet. Start exploring our
+                        collections.
                       </p>
                       <Link
                         href="/shop"
@@ -472,8 +557,12 @@ function UserProfileContent() {
                     /* Orders List */
                     <div className="space-y-6">
                       {orders.map((order) => {
-                        const statusInfo = getOrderStatusInfo(order.orderStatus);
-                        const orderDate = new Date(order.createdAt).toLocaleDateString("en-IN", {
+                        const statusInfo = getOrderStatusInfo(
+                          order.orderStatus,
+                        );
+                        const orderDate = new Date(
+                          order.createdAt,
+                        ).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "long",
                           year: "numeric",
@@ -488,18 +577,28 @@ function UserProfileContent() {
                             <div className="flex flex-col gap-3 border-b border-gray-100 bg-[#fcfaf9] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
                               <div className="grid grid-cols-2 gap-x-6 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-8">
                                 <div>
-                                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Order ID</p>
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                    Order ID
+                                  </p>
                                   <p className="text-xs font-mono font-bold text-gray-800 uppercase">
                                     #{order._id.substring(order._id.length - 8)}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Placed On</p>
-                                  <p className="text-xs font-semibold text-gray-800">{orderDate}</p>
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                    Placed On
+                                  </p>
+                                  <p className="text-xs font-semibold text-gray-800">
+                                    {orderDate}
+                                  </p>
                                 </div>
                                 <div>
-                                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Total</p>
-                                  <p className="text-xs font-bold text-[#99775c]">₹{order.totalAmount}</p>
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                    Total
+                                  </p>
+                                  <p className="text-xs font-bold text-[#99775c]">
+                                    ₹{order.totalAmount}
+                                  </p>
                                 </div>
                               </div>
                               <div>
@@ -534,32 +633,61 @@ function UserProfileContent() {
                                   )}
                                   <div className="flex flex-col justify-center">
                                     <h4 className="text-base font-bold text-gray-900 leading-snug">
-                                      {order.productSnapshot?.name || "Premium Fine Jewelry"}
+                                      {order.productSnapshot?.name ||
+                                        "Premium Fine Jewelry"}
                                     </h4>
-                                    
+
                                     <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
                                       {order.productSnapshot?.sku && (
-                                        <p><span className="font-semibold text-gray-700">SKU:</span> {order.productSnapshot.sku}</p>
+                                        <p>
+                                          <span className="font-semibold text-gray-700">
+                                            SKU:
+                                          </span>{" "}
+                                          {order.productSnapshot.sku}
+                                        </p>
                                       )}
                                       {order.productSnapshot?.metal && (
-                                        <p><span className="font-semibold text-gray-700">Metal:</span> {order.productSnapshot.metal}</p>
+                                        <p>
+                                          <span className="font-semibold text-gray-700">
+                                            Metal:
+                                          </span>{" "}
+                                          {order.productSnapshot.metal}
+                                        </p>
                                       )}
                                       {order.productSnapshot?.gemstone && (
-                                        <p><span className="font-semibold text-gray-700">Gem:</span> {order.productSnapshot.gemstone}</p>
+                                        <p>
+                                          <span className="font-semibold text-gray-700">
+                                            Gem:
+                                          </span>{" "}
+                                          {order.productSnapshot.gemstone}
+                                        </p>
                                       )}
                                       {order.selectedRingSize && (
-                                        <p><span className="font-semibold text-gray-700">Size:</span> {order.selectedRingSize}</p>
+                                        <p>
+                                          <span className="font-semibold text-gray-700">
+                                            Size:
+                                          </span>{" "}
+                                          {order.selectedRingSize}
+                                        </p>
                                       )}
-                                      <p><span className="font-semibold text-gray-700">Qty:</span> {order.quantity}</p>
+                                      <p>
+                                        <span className="font-semibold text-gray-700">
+                                          Qty:
+                                        </span>{" "}
+                                        {order.quantity}
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
 
                                 {/* Order Actions */}
                                 <div className="flex flex-col justify-center gap-3 md:items-end">
-                                  {(order.orderStatus === "placed" || order.orderStatus === "confirmed") && (
+                                  {(order.orderStatus === "placed" ||
+                                    order.orderStatus === "confirmed") && (
                                     <button
-                                      onClick={() => handleCancelOrder(order._id)}
+                                      onClick={() =>
+                                        handleCancelOrder(order._id)
+                                      }
                                       className="inline-flex items-center justify-center gap-2 rounded-full border border-red-200 bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider text-red-600 shadow-sm transition hover:bg-red-50 active:bg-red-100"
                                     >
                                       <FaTimesCircle className="h-3 w-3" />
@@ -569,7 +697,9 @@ function UserProfileContent() {
 
                                   {order.orderStatus === "delivered" && (
                                     <button
-                                      onClick={() => handleOpenReturnModal(order._id)}
+                                      onClick={() =>
+                                        handleOpenReturnModal(order._id)
+                                      }
                                       className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider text-gray-700 shadow-sm transition hover:bg-gray-50 active:bg-gray-100"
                                     >
                                       <FaUndo className="h-3 w-3 text-[#99775c]" />
@@ -579,37 +709,50 @@ function UserProfileContent() {
 
                                   {order.orderStatus === "return_requested" && (
                                     <div className="rounded-xl bg-orange-50 border border-orange-100 p-3 text-xs text-orange-800 max-w-sm">
-                                      <p className="font-bold mb-1 flex items-center gap-1.5"><FaSpinner className="animate-spin"/> Return Pending Approval</p>
+                                      <p className="font-bold mb-1 flex items-center gap-1.5">
+                                        <FaSpinner className="animate-spin" />{" "}
+                                        Return Pending Approval
+                                      </p>
                                       <p className="text-[11px] leading-relaxed text-orange-700 mt-1.5 pt-1.5 border-t border-orange-200">
-                                        <strong>Reason:</strong> "{order.returnReason}"
+                                        <strong>Reason:</strong> "
+                                        {order.returnReason}"
                                       </p>
                                     </div>
                                   )}
 
                                   {order.orderStatus === "returned" && (
                                     <div className="rounded-xl bg-teal-50 border border-teal-100 p-3 text-xs text-teal-800 max-w-sm">
-                                      <p className="font-bold mb-1 flex items-center gap-1.5"><FaCheckCircle/> Return Accepted</p>
+                                      <p className="font-bold mb-1 flex items-center gap-1.5">
+                                        <FaCheckCircle /> Return Accepted
+                                      </p>
                                       <p className="text-[11px] text-teal-700 mt-1.5 pt-1.5 border-t border-teal-200">
-                                        Refund is processed or item has been returned back.
+                                        Refund is processed or item has been
+                                        returned back.
                                       </p>
                                     </div>
                                   )}
 
                                   {order.orderStatus === "return_rejected" && (
                                     <div className="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-700 max-w-sm">
-                                      <p className="font-bold mb-1 text-slate-800 flex items-center gap-1.5"><FaInfoCircle/> Return Declined</p>
+                                      <p className="font-bold mb-1 text-slate-800 flex items-center gap-1.5">
+                                        <FaInfoCircle /> Return Declined
+                                      </p>
                                       <p className="text-[11px] text-slate-500 mt-1.5 pt-1.5 border-t border-slate-200">
-                                        Please contact customer support for further information.
+                                        Please contact customer support for
+                                        further information.
                                       </p>
                                     </div>
                                   )}
 
                                   {order.orderStatus === "rto" && (
                                     <div className="rounded-xl bg-rose-50 border border-rose-100 p-3 text-xs text-rose-800 max-w-sm">
-                                      <p className="font-bold mb-1 flex items-center gap-1.5"><FaUndo/> Returned to Origin</p>
+                                      <p className="font-bold mb-1 flex items-center gap-1.5">
+                                        <FaUndo /> Returned to Origin
+                                      </p>
                                       {order.rtoReason && (
                                         <p className="text-[11px] text-rose-600 mt-1.5 pt-1.5 border-t border-rose-200">
-                                          <strong>Reason:</strong> "{order.rtoReason}"
+                                          <strong>Reason:</strong> "
+                                          {order.rtoReason}"
                                         </p>
                                       )}
                                     </div>
@@ -627,22 +770,31 @@ function UserProfileContent() {
 
               {activeTab === "account" && (
                 <div className="rounded-3xl bg-white p-8 shadow-sm border border-gray-100 max-w-2xl">
-                  <h3 className="text-xl font-bold text-[#2d2d2d] mb-6">Account Details</h3>
+                  <h3 className="text-xl font-bold text-[#2d2d2d] mb-6">
+                    Account Details
+                  </h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Full Name</label>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                        Full Name
+                      </label>
                       <div className="w-full rounded-xl border border-gray-200 bg-[#fcfaf9] px-4 py-3 text-sm text-gray-800 font-medium">
                         {user?.name}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Email Address</label>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                        Email Address
+                      </label>
                       <div className="w-full rounded-xl border border-gray-200 bg-[#fcfaf9] px-4 py-3 text-sm text-gray-800 font-medium">
                         {user?.email}
                       </div>
                     </div>
                     <div className="pt-4 mt-4 border-t border-gray-100">
-                      <p className="text-xs text-gray-500 italic">Account details are currently managed centrally. Please contact support to change your email or password.</p>
+                      <p className="text-xs text-gray-500 italic">
+                        Account details are currently managed centrally. Please
+                        contact support to change your email or password.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -706,8 +858,12 @@ function UserProfileContent() {
               )}
 
               <div className="rounded-xl bg-[#efe7e1]/30 p-4 text-[11px] leading-relaxed text-gray-500 border border-[#efe7e1]/70">
-                <p className="font-bold text-[#99775c] mb-1 uppercase tracking-wider">Return Policy Notice:</p>
-                Our team will review your return request. The item must be unused, in its original packaging, and with all tags intact to be eligible for approval.
+                <p className="font-bold text-[#99775c] mb-1 uppercase tracking-wider">
+                  Return Policy Notice:
+                </p>
+                Our team will review your return request. The item must be
+                unused, in its original packaging, and with all tags intact to
+                be eligible for approval.
               </div>
 
               {/* Modal Buttons */}
@@ -746,7 +902,13 @@ function UserProfileContent() {
 
 export default function UserProfilePage() {
   return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="animate-spin text-[#D4AF37] text-4xl">Loading...</div></div>}>
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="animate-spin text-[#D4AF37] text-4xl">Loading...</div>
+        </div>
+      }
+    >
       <UserProfileContent />
     </Suspense>
   );

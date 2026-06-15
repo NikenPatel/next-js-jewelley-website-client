@@ -38,7 +38,7 @@
 
 import Image from "next/image";
 
-import WishlistButton from "../ui/WishlistButton";
+import WishlistButton from "./WishlistButton";
 
 interface Props {
   item: any;

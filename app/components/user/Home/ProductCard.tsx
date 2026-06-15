@@ -1,5 +1,5 @@
 import { FaHeart, FaStar } from "react-icons/fa";
-import WishlistButton from "../../ui/WishlistButton";
+import WishlistButton from "../../common/WishlistButton";
 import AddToCartButton from "./AddToCartButton";
 
 const ProductCard = ({ product }: { product: any }) => {

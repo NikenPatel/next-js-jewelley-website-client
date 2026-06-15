@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 // import { signup } from "@/store/authSlice";
 import sideimage from "@/public/images/auth.png";
 import { signup } from "@/app/store/slices/authSlice";
-import TextInput from "@/app/components/ui/Input";
+import TextInput from "@/app/components/common/Input";
 
 interface FormState {
   name: string;

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import sideimage from "@/public/images/auth.png";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import TextInput from "@/app/components/ui/Input";
+import TextInput from "@/app/components/common/Input";
 import { signin } from "@/app/store/slices/authSlice";
 
 interface LoginForm {
